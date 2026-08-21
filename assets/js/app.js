@@ -11,9 +11,6 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TOUCH = matchMedia('(hover:none), (pointer:coarse)').matches;
 
-/* A url() living in a custom property is resolved against the stylesheet that
-   *uses* it (assets/css/), not the document — so hand CSS an absolute URL. */
-const ABS   = p => new URL(p, location.href).href;
 const IMG   = id => `assets/img/thumb/${id}.webp`;
 const IMGF  = id => `assets/img/full/${id}.webp`;
 const VID   = id => `assets/video/${id}.mp4`;
@@ -231,13 +228,29 @@ function awardFilm () {
 /* ══ 8. REEL ═══════════════════════════════════════════════ */
 const PLAY_SVG = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
 
-function reel () {
-  const grid = $('#reelGrid'), chips = $('#reelChips');
-  const cats = ['전체', ...new Set(D.videos.map(v => v.cat))];
+/* The films that should stop a scroll: strongest craft, most complete story.
+   Everything else reads at one column. */
+const FLAGSHIP = new Set(['w01', 'w18']);
 
-  grid.innerHTML = D.videos.map(v => `
-    <article class="vcard${v.ratio === '9:16' ? ' vcard--v' : ''}" data-vid="${v.id}" data-cat="${v.cat}" data-cursor="재생"
-             style="--poster:url('${ABS(POST(v.id))}')">
+function reel () {
+  const wrap = $('#reelGroups'), chips = $('#reelChips');
+
+  /* One line of intent per category, so a group header carries meaning
+     instead of just naming a bucket. */
+  const BLURB = {
+    '뷰티':      '질감과 흡수를 보여주는 것이 전부인 카테고리.',
+    '푸드':      '식욕은 온도와 움직임에서 온다.',
+    '리빙·주방':  '손이 닿는 순간을 찍는다.',
+    '헬스·F&B':  '성분을 눈에 보이는 물리로 번역한다.',
+    '테크·오디오': '보이지 않는 성능을 빛과 파형으로.',
+    '펫':        '반려동물이 실제로 다가와야 믿는다.',
+    '라이프스타일': '제품이 아니라 그 제품을 쓰는 시간을 판다.',
+  };
+
+  const cats = D.cats.filter(c => c !== '전체' && D.videos.some(v => v.cat === c));
+
+  const card = v => `
+    <article class="vcard${FLAGSHIP.has(v.id) ? ' vcard--wide' : ''}" data-vid="${v.id}" data-cursor="재생">
       <div class="vcard__media">
         <img src="${POST(v.id)}" alt="${v.brand} ${v.title}" loading="lazy" decoding="async">
         <video muted loop playsinline preload="none" data-src="${VID(v.id)}"></video>
@@ -249,42 +262,175 @@ function reel () {
         <span class="vcard__brand">${v.brand}</span>
         <span class="vcard__title">${v.title}</span>
       </div>
-    </article>`).join('');
+    </article>`;
 
-  chips.innerHTML = cats.map((c, i) =>
+  wrap.innerHTML = cats.map(c => {
+    const list = D.videos.filter(v => v.cat === c);
+    return `
+    <section class="rgroup" data-cat="${c}">
+      <header class="rgroup__head">
+        <h3>${c}</h3><span>${list.length}편</span>
+        <em>${BLURB[c] || ''}</em>
+      </header>
+      <div class="rgroup__grid">${list.map(card).join('')}</div>
+    </section>`;
+  }).join('');
+
+  chips.innerHTML = ['전체', ...cats].map((c, i) =>
     `<button class="chip${i === 0 ? ' is-on' : ''}" data-f="${c}">${c}</button>`).join('');
 
   chips.addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     $$('.chip', chips).forEach(c => c.classList.toggle('is-on', c === b));
     const f = b.dataset.f;
-    $$('.vcard', grid).forEach(card =>
-      card.classList.toggle('is-hidden', f !== '전체' && card.dataset.cat !== f));
+    $$('.rgroup', wrap).forEach(g =>
+      g.classList.toggle('is-hidden', f !== '전체' && g.dataset.cat !== f));
   });
 
-  /* hover-to-play — load the file only on first hover */
+  autoplayInView(wrap);
+
+  wrap.addEventListener('click', e => {
+    const c = e.target.closest('.vcard'); if (!c) return;
+    const visible = $$('.rgroup:not(.is-hidden) .vcard', wrap);
+    openLB(visible.map(el => {
+      const v = D.videos.find(x => x.id === el.dataset.vid);
+      return { type: 'video', id: v.id, title: v.brand, sub: `${v.title} · ${v.ratio} · ${v.dur}` };
+    }), visible.indexOf(c));
+  });
+}
+
+/* ══ 8a. FEATURED SHOWCASE ═════════════════════════════════
+   Six films, one viewport each, stacked with position:sticky so each
+   slides over the last. The work is the layout. */
+const FEATURED = [
+  ['w01', '향을 빛의 궤적으로 번역했다. 병을 찍지 않고, 향이 지나간 자리를 찍는다.'],
+  ['w18', '소리를 볼 수 있게 만드는 일. 손이 닿는 순간 퍼지는 파동이 이 필름의 주인공이다.'],
+  ['w22', '칼은 날로 말한다. 절삭의 물리를 슬로우로 늘려 촉감을 화면에 옮겼다.'],
+  ['w15', '불꽃 하나로 방 전체의 온도를 만든다. 우드윅이 타는 소리까지 설계했다.'],
+  ['w20', '주사위가 구르는 3초. 테이블탑이라는 취미의 설렘을 그 안에 담았다.'],
+  ['w13', '반려동물이 실제로 다가와야 믿는다. 연출이 아니라 반응을 기다렸다.'],
+];
+
+function featured () {
+  const stack = $('#featStack');
+  if (!stack) return;
+  const items = FEATURED
+    .map(([id, line]) => [D.videos.find(v => v.id === id), line])
+    .filter(([v]) => v);
+
+  stack.innerHTML = items.map(([v, line], i) => `
+    <article class="fpanel" data-vid="${v.id}">
+      <div class="fpanel__media">
+        <img src="${POST(v.id)}" alt="${v.brand}" loading="lazy" decoding="async">
+        <video muted loop playsinline preload="none" data-src="${VID(v.id)}"></video>
+      </div>
+      <div class="fpanel__scrim"></div>
+      <div class="fpanel__type">
+        <span class="fpanel__no">${String(i + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}</span>
+        <h3 class="fpanel__brand">${v.brand}</h3>
+        <p class="fpanel__line">${line}</p>
+        <div class="fpanel__meta"><span>${v.title}</span><span>${v.ratio}</span><span>${v.dur}</span></div>
+      </div>
+      <button class="fpanel__play" aria-label="${v.brand} 재생" data-cursor="소리켜기">${PLAY_SVG}</button>
+    </article>`).join('');
+
+  /* only the panel on screen decodes */
+  const io = new IntersectionObserver(ents => {
+    ents.forEach(e => {
+      const p = e.target, vid = $('video', p);
+      if (e.isIntersecting && e.intersectionRatio > 0.35) {
+        if (!vid.src) vid.src = vid.dataset.src;
+        vid.play().then(() => p.classList.add('is-live')).catch(() => {});
+      } else { vid.pause(); p.classList.remove('is-live'); }
+    });
+  }, { threshold: [0, 0.35, 0.7] });
+  $$('.fpanel', stack).forEach(p => io.observe(p));
+
+  stack.addEventListener('click', e => {
+    const p = e.target.closest('.fpanel'); if (!p) return;
+    const list = items.map(([v]) => ({
+      type: 'video', id: v.id, title: v.brand, sub: `${v.title} · ${v.ratio} · ${v.dur}`
+    }));
+    openLB(list, $$('.fpanel', stack).indexOf(p));
+  });
+}
+
+/* ══ 8b. AUTOPLAY IN VIEW ═══════════════════════════════════
+   A studio reel that only moves on hover reads as a filing cabinet.
+   Tiles play whenever they are on screen and pause the moment they
+   leave, so nothing decodes off-screen. Touch plays one at a time. */
+function autoplayInView (root) {
+  if (RM) return;
+  const budget = TOUCH ? 1 : 6;
+  const live = new Set();
+
+  const io = new IntersectionObserver(ents => {
+    ents.forEach(e => {
+      const card = e.target, v = $('video', card);
+      if (e.isIntersecting && e.intersectionRatio > 0.45) {
+        if (live.size >= budget && !live.has(card)) return;
+        if (!v.src) v.src = v.dataset.src;
+        v.play().then(() => { card.classList.add('is-playing'); live.add(card); })
+                .catch(() => {});
+      } else {
+        v.pause(); card.classList.remove('is-playing'); live.delete(card);
+      }
+    });
+  }, { threshold: [0, 0.45, 0.8] });
+
+  $$('.vcard', root).forEach(c => io.observe(c));
+
+  /* hover still wins: it jumps a tile to the front of the queue */
   if (!TOUCH) {
-    grid.addEventListener('mouseenter', e => {
+    root.addEventListener('mouseenter', e => {
       const card = e.target.closest?.('.vcard'); if (!card) return;
       const v = $('video', card);
       if (!v.src) v.src = v.dataset.src;
       v.play().then(() => card.classList.add('is-playing')).catch(() => {});
     }, true);
-    grid.addEventListener('mouseleave', e => {
-      const card = e.target.closest?.('.vcard'); if (!card) return;
-      const v = $('video', card);
-      v.pause(); card.classList.remove('is-playing');
-    }, true);
   }
+}
 
-  grid.addEventListener('click', e => {
-    const card = e.target.closest('.vcard'); if (!card) return;
-    const visible = $$('.vcard:not(.is-hidden)', grid);
-    openLB(visible.map(c => {
-      const v = D.videos.find(x => x.id === c.dataset.vid);
-      return { type: 'video', id: v.id, title: v.brand, sub: `${v.title} · ${v.ratio} · ${v.dur}` };
-    }), visible.indexOf(card));
-  });
+/* ══ 8c. FILM BAND ═════════════════════════════════════════
+   A full-bleed strip of moving work between the grids. */
+function band () {
+  const track = $('#bandTrack');
+  if (!track) return;
+  const pick = ['w22', 'w15', 'w20', 'w21', 'w16', 'w13', 'w11', 'w04', 'w19', 'w12'];
+  const cell = id => {
+    const v = D.videos.find(x => x.id === id);
+    if (!v) return '';
+    return `<div class="band__cell" data-vid="${id}">
+      <img src="${POST(id)}" alt="${v.brand}" loading="lazy" decoding="async">
+      <video muted loop playsinline preload="none" data-src="${VID(id)}"></video>
+      <b>${v.brand}</b></div>`;
+  };
+  const html = pick.map(cell).join('');
+  track.innerHTML = html + html;          // duplicated for a seamless wrap
+
+  if (RM) return;
+
+  /* Drive the marquee from scroll position, not a timer: the strip only
+     moves when the reader does, which reads as parallax rather than noise. */
+  const half = () => track.scrollWidth / 2;
+  let x = 0;
+  const step = () => {
+    x = (scrollY * 0.35) % half();
+    track.style.transform = `translateX(${-x}px)`;
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+
+  const io = new IntersectionObserver(ents => {
+    ents.forEach(e => {
+      const c = e.target, v = $('video', c);
+      if (e.isIntersecting) {
+        if (!v.src) v.src = v.dataset.src;
+        v.play().then(() => c.classList.add('is-live')).catch(() => {});
+      } else { v.pause(); c.classList.remove('is-live'); }
+    });
+  }, { threshold: 0.3 });
+  $$('.band__cell', track).forEach(c => io.observe(c));
 }
 
 /* ══ 9. WORK / BRAND CASES ═════════════════════════════════ */
@@ -303,7 +449,8 @@ function work () {
       </span>
     </button>`).join('');
 
-  chips.innerHTML = D.cats.map((c, i) =>
+  const wcats = ['전체', ...D.cats.filter(c => c !== '전체' && D.brands.some(b => b.cat === c))];
+  chips.innerHTML = wcats.map((c, i) =>
     `<button class="chip${i === 0 ? ' is-on' : ''}" data-f="${c}">${c}</button>`).join('');
 
   chips.addEventListener('click', e => {
@@ -358,19 +505,32 @@ function archive () {
   let n = 0;
   const STEP = 72;
 
+  /* Tile size comes from the image's real aspect; every 9th gets a hero cell
+     so the wall has a beat instead of an even hum. */
+  const sizeOf = (m, i) => {
+    const r = m.w / m.h;
+    if (i % 9 === 4) return ' acell--big';
+    if (r > 1.35)    return ' acell--wide';
+    if (r < 0.75)    return ' acell--tall';
+    return '';
+  };
+
   const render = () => {
     const slice = all.slice(n, n + STEP);
     if (!slice.length) { more.style.display = 'none'; return; }
-    grid.insertAdjacentHTML('beforeend', slice.map((m, k) => `
-      <button class="acell" data-i="${n + k}" data-cursor="확대">
-        <img src="${IMG(m.id)}" alt="${BRAND[m.b]?.name || m.b} 커머스 컷" loading="lazy" decoding="async"
-             width="${m.w}" height="${m.h}">
-        <span class="acell__b">${BRAND[m.b]?.name || m.b}</span>
-      </button>`).join(''));
+    grid.insertAdjacentHTML('beforeend', slice.map((m, k) => {
+      const name = BRAND[m.b]?.name || m.b;
+      return `
+      <button class="acell${sizeOf(m, n + k)}" data-i="${n + k}" data-cursor="${name}">
+        <img src="${IMG(m.id)}" alt="${name} 커머스 컷" loading="lazy" decoding="async">
+        <span class="acell__b">${name}</span>
+      </button>`;
+    }).join(''));
     n += slice.length;
     if (n >= all.length) more.style.display = 'none';
   };
-  render(); render();
+
+  render(); render();                 // two screens' worth up front
 
   more.addEventListener('click', render);
 
@@ -440,6 +600,212 @@ lbStage.addEventListener('touchend',  e => {
   if (Math.abs(dx) > 55) step(dx > 0 ? -1 : 1);
 }, { passive: true });
 
+/* ══ 12b. AMBIENT FIELD ════════════════════════════════════
+   Wireframe polygons drifting behind the content, plus rings that expand
+   from a point the way the GOYO signal does. Deliberately faint — it is
+   atmosphere, not decoration. Off entirely for reduced-motion. */
+function ambient () {
+  const cv = $('#fx');
+  if (!cv || RM) return;
+  const ctx = cv.getContext('2d', { alpha: true });
+  let W = 0, H = 0, dpr = 1;
+
+  const fit = () => {
+    dpr = Math.min(2, devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  fit();
+  addEventListener('resize', fit, { passive: true });
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  const shapes = Array.from({ length: 7 }, (_, i) => ({
+    x: rnd(0, 1), y: rnd(0, 1),
+    r: rnd(46, 150),
+    sides: [3, 4, 6][i % 3],
+    rot: rnd(0, Math.PI * 2),
+    spin: rnd(-0.0016, 0.0016),
+    vx: rnd(-0.00013, 0.00013),
+    vy: rnd(-0.00010, 0.00010),
+    hot: i % 3 === 0,
+    depth: rnd(0.25, 1),
+  }));
+
+  /* rings emit on a slow cadence from a drifting origin */
+  let rings = [];
+  let nextRing = 0;
+
+  let mx = -1, my = -1;
+  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+  let hidden = false;
+  document.addEventListener('visibilitychange', () => { hidden = document.hidden; });
+
+  const poly = (x, y, r, sides, rot) => {
+    ctx.beginPath();
+    for (let i = 0; i <= sides; i++) {
+      const a = rot + (i / sides) * Math.PI * 2;
+      const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r;
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+    }
+    ctx.stroke();
+  };
+
+  let t = 0;
+  const draw = () => {
+    requestAnimationFrame(draw);
+    if (hidden) return;
+    t += 1;
+    ctx.clearRect(0, 0, W, H);
+
+    const drift = scrollY * 0.02;
+
+    shapes.forEach(s => {
+      s.x += s.vx; s.y += s.vy; s.rot += s.spin;
+      if (s.x < -0.25) s.x = 1.25; if (s.x > 1.25) s.x = -0.25;
+      if (s.y < -0.25) s.y = 1.25; if (s.y > 1.25) s.y = -0.25;
+
+      let px = s.x * W, py = s.y * H - (drift * s.depth) % (H + 400);
+      if (py < -260) py += H + 400;
+
+      /* a shape near the pointer leans toward it */
+      if (mx > 0) {
+        const dx = mx - px, dy = my - py;
+        const d = Math.hypot(dx, dy);
+        if (d < 320) { const k = (1 - d / 320) * 16; px += (dx / d) * k; py += (dy / d) * k; }
+      }
+
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = s.hot
+        ? `rgba(255,90,31,${0.11 * s.depth})`
+        : `rgba(255,255,255,${0.055 * s.depth})`;
+      poly(px, py, s.r, s.sides, s.rot);
+    });
+
+    if (t > nextRing) {
+      nextRing = t + rnd(150, 300);
+      rings.push({ x: rnd(0.15, 0.85) * W, y: rnd(0.2, 0.8) * H, r: 0, life: 0 });
+      if (rings.length > 4) rings.shift();
+    }
+    rings = rings.filter(r => r.life < 300);
+    rings.forEach(r => {
+      r.life += 1; r.r += 1.15;
+      const fade = 1 - r.life / 300;
+      for (let k = 0; k < 3; k++) {
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r - k * 26, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,90,31,${0.09 * fade * (1 - k * 0.28)})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    });
+  };
+  requestAnimationFrame(draw);
+  requestAnimationFrame(() => cv.classList.add('is-on'));
+}
+
+/* ══ 13. FUNNEL FORMS ══════════════════════════════════════
+   The site is static, so there is no server to post to. Set ENDPOINT to a
+   Formspree/Basin/Getform URL and both forms POST there. Leave it empty and
+   they fall back to a prefilled mail draft, so the funnel works on day one
+   either way — it never silently swallows a lead. */
+const FORM = {
+  ENDPOINT: '',                               // ← paste your form endpoint here
+  MAILTO:   'hello@pixellab.kr',              // ← and your real inbox here
+  GUIDE:    'assets/guide/pixel-lab-detail-page-guide.pdf',
+};
+
+function forms () {
+  const say = (el, kind, html) => {
+    el.className = 'formmsg is-on is-' + kind;
+    el.innerHTML = html;
+  };
+  const bad = (field, on) => field?.closest('.field, .check')?.classList.toggle('is-bad', on);
+
+  const send = async (payload, subject) => {
+    if (FORM.ENDPOINT) {
+      const r = await fetch(FORM.ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error('endpoint ' + r.status);
+      return 'sent';
+    }
+    const body = Object.entries(payload)
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k}: ${v}`).join('\n');
+    location.href = `mailto:${FORM.MAILTO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return 'mail';
+  };
+
+  /* ── lead magnet ── */
+  const lf = $('#leadForm'), lm = $('#leadMsg');
+  if (lf) lf.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('#leadEmail');
+    const ok = email.value.trim() && email.checkValidity();
+    bad(email, !ok);
+    if (!ok) { say(lm, 'err', '이메일 주소를 확인해주세요.'); email.focus(); return; }
+
+    const btn = $('button', lf);
+    btn.disabled = true; btn.textContent = '보내는 중…';
+    try {
+      const how = await send({ form: '가이드 신청', email: email.value.trim() },
+                             '[Pixel Lab] 상세페이지 가이드 신청');
+      say(lm, 'ok', how === 'sent'
+        ? `신청 완료. 메일함을 확인해주세요.<br><a href="${FORM.GUIDE}" download>바로 내려받기</a>`
+        : `메일 앱이 열립니다. 그대로 보내주시면 가이드를 보내드립니다.<br><a href="${FORM.GUIDE}" download>지금 바로 내려받기</a>`);
+      lf.reset();
+    } catch {
+      say(lm, 'err', `전송에 실패했습니다. <a href="${FORM.GUIDE}" download>가이드를 직접 내려받으세요.</a>`);
+    } finally { btn.disabled = false; btn.textContent = '무료로 받기'; }
+  });
+
+  /* ── enquiry ── */
+  const cf = $('#contactForm'), cm = $('#contactMsg');
+  if (cf) cf.addEventListener('submit', async e => {
+    e.preventDefault();
+    const req = [$('#cName'), $('#cEmail'), $('#cType'), $('#cAgree')];
+    let firstBad = null;
+    req.forEach(f => {
+      const ok = f.type === 'checkbox' ? f.checked : (f.value.trim() && f.checkValidity());
+      bad(f, !ok);
+      if (!ok && !firstBad) firstBad = f;
+    });
+    if (firstBad) { say(cm, 'err', '표시된 항목을 확인해주세요.'); firstBad.focus(); return; }
+
+    const btn = $('button[type=submit]', cf);
+    btn.disabled = true; btn.textContent = '보내는 중…';
+    try {
+      const how = await send({
+        form: '광고 문의',
+        이름: $('#cName').value.trim(),
+        회사: $('#cCompany').value.trim(),
+        이메일: $('#cEmail').value.trim(),
+        연락처: $('#cPhone').value.trim(),
+        작업: $('#cType').value,
+        예산: $('#cBudget').value,
+        일정: $('#cWhen').value,
+        상담방식: $('#cCall').value,
+        내용: $('#cMsg').value.trim(),
+      }, `[Pixel Lab] 광고 문의 — ${$('#cName').value.trim()}`);
+      say(cm, 'ok', how === 'sent'
+        ? '접수했습니다. 영업일 기준 24시간 안에 답장드리겠습니다.'
+        : '메일 앱이 열립니다. 내용을 확인하고 그대로 보내주세요.');
+      if (how === 'sent') cf.reset();
+    } catch {
+      say(cm, 'err', `전송에 실패했습니다. <a href="mailto:${FORM.MAILTO}">${FORM.MAILTO}</a> 로 보내주세요.`);
+    } finally { btn.disabled = false; btn.textContent = '문의 보내기'; }
+  });
+
+  /* clear the error state as soon as the visitor fixes it */
+  $$('.cform input, .cform select, .cform textarea, #leadForm input').forEach(f =>
+    f.addEventListener('input', () => bad(f, false)));
+}
+
 /* ══ DEEP LINK ═════════════════════════════════════════════ */
 /* index.html#work / ?at=work both land on the section.
    Runs after the grids exist so offsets are already correct. */
@@ -455,6 +821,6 @@ function deepLink () {
 
 /* ══ GO ════════════════════════════════════════════════════ */
 boot(); cursor(); chrome(); counts(); reveal(); heroFilm(); ticker();
-awardFilm(); reel(); work(); archive(); deepLink();
+awardFilm(); featured(); reel(); band(); work(); archive(); ambient(); forms(); deepLink();
 
 })();

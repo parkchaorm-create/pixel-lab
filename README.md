@@ -45,18 +45,38 @@ python3 -m http.server 8777 --directory "/Volumes/sub_storage/05.광고대행/pi
 
 ---
 
-## 3. 꼭 바꿔야 할 것
+## 3. 꼭 바꿔야 할 것 — 폼 연결
 
-### 연락처 — `index.html`
+`assets/js/app.js` 상단의 `FORM` 객체 **딱 세 줄**입니다.
 
-`<!-- ▼▼ 실제 연락처로 교체하세요 ▼▼ -->` 주석 블록 안에 임시값이 들어 있습니다.
-
-```html
-<a class="contact__mail reveal" href="mailto:hello@pixellab.kr" ...>hello@pixellab.kr</a>
+```js
+const FORM = {
+  ENDPOINT: '',                  // ← 폼 수신 주소 (아래 참고)
+  MAILTO:   'hello@pixellab.kr', // ← 실제 수신 이메일 (현재 임시값)
+  GUIDE:    'assets/guide/pixel-lab-detail-page-guide.pdf',
+};
 ```
 
-→ `href`와 표시 텍스트를 실제 이메일로 바꾸세요. 바로 아래 `.contact__meta`의
-기반 도시·작업 범위·응답 시간도 함께 확인해 주세요.
+### 지금 상태 (ENDPOINT 비어 있음)
+
+폼을 제출하면 **방문자의 메일 앱이 내용이 채워진 채로 열립니다.**
+설정 없이도 문의가 끊기지 않지만, 방문자가 한 번 더 '보내기'를 눌러야 합니다.
+`MAILTO`만 실제 주소로 바꾸면 오늘부터 쓸 수 있습니다.
+
+### 권장 — 무료 폼 수신 서비스 연결 (5분)
+
+1. <https://formspree.io> 가입 후 새 폼 생성 (무료: 월 50건)
+2. 발급된 주소(`https://formspree.io/f/xxxxxxx`)를 `ENDPOINT`에 붙여넣기
+
+그러면 방문자가 버튼 한 번만 누르면 되고, 제출 내역이 대시보드에 쌓이며
+이메일로도 알림이 옵니다. Basin·Getform·Web3Forms도 같은 방식으로 동작합니다.
+
+> 계정 생성은 직접 하셔야 합니다. 폼 자체는 이미 두 방식 모두에 맞게 만들어져 있습니다.
+
+### 리드마그넷 PDF
+
+`assets/guide/pixel-lab-detail-page-guide.pdf` — 「팔리는 상세페이지 15컷 구성 가이드」 4쪽.
+내용을 고치려면 같은 폴더의 `_source.html`을 수정한 뒤 브라우저에서 인쇄 → PDF로 저장하세요.
 
 ### 그 외 다듬을 수 있는 곳
 
