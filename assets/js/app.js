@@ -250,13 +250,15 @@ function reel () {
   const cats = D.cats.filter(c => c !== '전체' && D.videos.some(v => v.cat === c));
 
   const card = v => `
-    <article class="vcard${FLAGSHIP.has(v.id) ? ' vcard--wide' : ''}" data-vid="${v.id}" data-cursor="재생">
+    <article class="vcard" data-vid="${v.id}" data-cursor="재생">
       <div class="vcard__media">
         <img src="${POST(v.id)}" alt="${v.brand} ${v.title}" loading="lazy" decoding="async">
         <video muted loop playsinline preload="none" data-src="${VID(v.id)}"></video>
       </div>
       <div class="vcard__grad"></div>
       <div class="vcard__ind">${PLAY_SVG}</div>
+      <div class="vcard__hint">← 좌우로 움직여 미리보기 →</div>
+      <div class="vcard__scrub"><i></i></div>
       <div class="vcard__tags"><span class="vcard__tag">${v.ratio}</span><span class="vcard__tag">${v.dur}</span></div>
       <div class="vcard__body">
         <span class="vcard__brand">${v.brand}</span>
@@ -272,7 +274,7 @@ function reel () {
         <h3>${c}</h3><span>${list.length}편</span>
         <em>${BLURB[c] || ''}</em>
       </header>
-      <div class="rgroup__grid">${list.map(card).join('')}</div>
+      <div class="rgroup__grid" style="--n:${Math.min(4, list.length)}">${list.map(card).join('')}</div>
     </section>`;
   }).join('');
 
@@ -306,9 +308,6 @@ const FEATURED = [
   ['w01', '향을 빛의 궤적으로 번역했다. 병을 찍지 않고, 향이 지나간 자리를 찍는다.'],
   ['w18', '소리를 볼 수 있게 만드는 일. 손이 닿는 순간 퍼지는 파동이 이 필름의 주인공이다.'],
   ['w22', '칼은 날로 말한다. 절삭의 물리를 슬로우로 늘려 촉감을 화면에 옮겼다.'],
-  ['w15', '불꽃 하나로 방 전체의 온도를 만든다. 우드윅이 타는 소리까지 설계했다.'],
-  ['w20', '주사위가 구르는 3초. 테이블탑이라는 취미의 설렘을 그 안에 담았다.'],
-  ['w13', '반려동물이 실제로 다가와야 믿는다. 연출이 아니라 반응을 기다렸다.'],
 ];
 
 function featured () {
@@ -410,17 +409,6 @@ function band () {
 
   if (RM) return;
 
-  /* Drive the marquee from scroll position, not a timer: the strip only
-     moves when the reader does, which reads as parallax rather than noise. */
-  const half = () => track.scrollWidth / 2;
-  let x = 0;
-  const step = () => {
-    x = (scrollY * 0.35) % half();
-    track.style.transform = `translateX(${-x}px)`;
-    requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-
   const io = new IntersectionObserver(ents => {
     ents.forEach(e => {
       const c = e.target, v = $('video', c);
@@ -431,14 +419,15 @@ function band () {
     });
   }, { threshold: 0.3 });
   $$('.band__cell', track).forEach(c => io.observe(c));
+  marquee($('#band'), track, 0.5);
 }
 
 /* ══ 9. WORK / BRAND CASES ═════════════════════════════════ */
 function work () {
-  const grid = $('#workGrid'), chips = $('#workChips');
+  const wall = $('#workGrid'), chips = $('#workChips');
 
-  grid.innerHTML = D.brands.map(b => `
-    <button class="bcard" data-b="${b.key}" data-cat="${b.cat}" data-cursor="열기">
+  const card = b => `
+    <button class="acell bcard" data-b="${b.key}" data-cat="${b.cat}" data-cursor="${b.name}">
       <img src="${IMG(b.cover)}" alt="${b.name} ${b.product}" loading="lazy" decoding="async">
       <span class="bcard__grad"></span>
       <span class="bcard__n">${b.shots.length}컷</span>
@@ -447,23 +436,30 @@ function work () {
         <span class="bcard__name">${b.name}</span>
         <span class="bcard__prod">${b.product}</span>
       </span>
-    </button>`).join('');
+    </button>`;
+
+  const half = Math.ceil(D.brands.length / 2);
+  wall.innerHTML = [D.brands.slice(0, half), D.brands.slice(half)].map(list => {
+    const cells = list.map(card).join('');
+    return `<div class="hrow">${cells}${cells}</div>`;
+  }).join('');
+  $$('.hrow', wall).forEach((row, i) => marquee(wall, row, [0.34, -0.26][i]));
 
   const wcats = ['전체', ...D.cats.filter(c => c !== '전체' && D.brands.some(b => b.cat === c))];
   chips.innerHTML = wcats.map((c, i) =>
     `<button class="chip${i === 0 ? ' is-on' : ''}" data-f="${c}">${c}</button>`).join('');
-
   chips.addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     $$('.chip', chips).forEach(c => c.classList.toggle('is-on', c === b));
     const f = b.dataset.f;
-    $$('.bcard', grid).forEach(card =>
-      card.classList.toggle('is-hidden', f !== '전체' && card.dataset.cat !== f));
+    /* dim instead of remove: the row keeps its rhythm while filtering */
+    $$('.bcard', wall).forEach(c =>
+      c.classList.toggle('is-dim', f !== '전체' && c.dataset.cat !== f));
   });
 
-  grid.addEventListener('click', e => {
-    const card = e.target.closest('.bcard'); if (!card) return;
-    openCase(BRAND[card.dataset.b]);
+  wall.addEventListener('click', e => {
+    const c = e.target.closest('.bcard'); if (!c) return;
+    openCase(BRAND[c.dataset.b]);
   });
 }
 
@@ -499,53 +495,35 @@ $('#caseGrid').addEventListener('click', e => {
 
 /* ══ 11. ARCHIVE ═══════════════════════════════════════════ */
 function archive () {
-  const grid = $('#archGrid'), more = $('#archMore');
+  const wall = $('#archGrid'), more = $('#archMore');
   const all = D.all;
   $('#archCount').textContent = all.length;
-  let n = 0;
-  const STEP = 72;
 
-  /* Tile size comes from the image's real aspect; every 9th gets a hero cell
-     so the wall has a beat instead of an even hum. */
-  const sizeOf = (m, i) => {
-    const r = m.w / m.h;
-    if (i % 9 === 4) return ' acell--big';
-    if (r > 1.35)    return ' acell--wide';
-    if (r < 0.75)    return ' acell--tall';
-    return '';
-  };
+  const ROWS = 3, PER = 46;
+  const rows = Array.from({ length: ROWS }, (_, r) =>
+    all.filter((_, i) => i % ROWS === r).slice(0, PER));
 
-  const render = () => {
-    const slice = all.slice(n, n + STEP);
-    if (!slice.length) { more.style.display = 'none'; return; }
-    grid.insertAdjacentHTML('beforeend', slice.map((m, k) => {
+  wall.innerHTML = rows.map(list => {
+    const cells = list.map(m => {
       const name = BRAND[m.b]?.name || m.b;
-      return `
-      <button class="acell${sizeOf(m, n + k)}" data-i="${n + k}" data-cursor="${name}">
+      return `<button class="acell" data-id="${m.id}" data-cursor="${name}">
         <img src="${IMG(m.id)}" alt="${name} 커머스 컷" loading="lazy" decoding="async">
-        <span class="acell__b">${name}</span>
-      </button>`;
-    }).join(''));
-    n += slice.length;
-    if (n >= all.length) more.style.display = 'none';
-  };
+        <span class="acell__b">${name}</span></button>`;
+    }).join('');
+    return `<div class="hrow">${cells}${cells}</div>`;
+  }).join('');
+  $$('.hrow', wall).forEach((row, i) => marquee(wall, row, [0.42, -0.3, 0.55][i]));
 
-  render(); render();                 // two screens' worth up front
-
-  more.addEventListener('click', render);
-
-  /* auto-load as the sentinel button nears the viewport */
-  new IntersectionObserver(es => { if (es[0].isIntersecting) render(); },
-    { rootMargin: '600px' }).observe(more);
-
-  grid.addEventListener('click', e => {
+  const list = () => all.map(m => ({
+    type: 'image', id: m.id,
+    title: BRAND[m.b]?.name || m.b,
+    sub: BRAND[m.b]?.product || '커머스 비주얼',
+  }));
+  wall.addEventListener('click', e => {
     const c = e.target.closest('.acell'); if (!c) return;
-    openLB(all.map(m => ({
-      type: 'image', id: m.id,
-      title: BRAND[m.b]?.name || m.b,
-      sub: BRAND[m.b]?.product || '커머스 비주얼'
-    })), +c.dataset.i);
+    openLB(list(), Math.max(0, all.findIndex(m => m.id === c.dataset.id)));
   });
+  more.addEventListener('click', () => openLB(list(), 0));
 }
 
 /* ══ 12. LIGHTBOX ══════════════════════════════════════════ */
@@ -600,16 +578,15 @@ lbStage.addEventListener('touchend',  e => {
   if (Math.abs(dx) > 55) step(dx > 0 ? -1 : 1);
 }, { passive: true });
 
-/* ══ 12b. AMBIENT FIELD ════════════════════════════════════
-   Wireframe polygons drifting behind the content, plus rings that expand
-   from a point the way the GOYO signal does. Deliberately faint — it is
-   atmosphere, not decoration. Off entirely for reduced-motion. */
+/* ══ 12b. REACTIVE FIELD ═══════════════════════════════════
+   Not a screensaver: the field only does anything because you move.
+   Moving the pointer drags a wake of signal rings; clicking fires a burst.
+   Same motif as the GOYO film the accent colour came from. */
 function ambient () {
   const cv = $('#fx');
   if (!cv || RM) return;
-  const ctx = cv.getContext('2d', { alpha: true });
-  let W = 0, H = 0, dpr = 1;
-
+  const ctx = cv.getContext('2d');
+  let W, H, dpr;
   const fit = () => {
     dpr = Math.min(2, devicePixelRatio || 1);
     W = innerWidth; H = innerHeight;
@@ -619,91 +596,224 @@ function ambient () {
   fit();
   addEventListener('resize', fit, { passive: true });
 
-  const rnd = (a, b) => a + Math.random() * (b - a);
+  let mx = -999, my = -999, pmx = 0, pmy = 0, speed = 0;
+  let rings = [];      // expanding signal rings
+  let trail = [];      // cursor wake
 
-  const shapes = Array.from({ length: 7 }, (_, i) => ({
-    x: rnd(0, 1), y: rnd(0, 1),
-    r: rnd(46, 150),
-    sides: [3, 4, 6][i % 3],
-    rot: rnd(0, Math.PI * 2),
-    spin: rnd(-0.0016, 0.0016),
-    vx: rnd(-0.00013, 0.00013),
-    vy: rnd(-0.00010, 0.00010),
-    hot: i % 3 === 0,
-    depth: rnd(0.25, 1),
-  }));
+  addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    const d = Math.hypot(mx - pmx, my - pmy);
+    speed += (Math.min(d, 60) - speed) * 0.25;
+    pmx = mx; pmy = my;
+    trail.push({ x: mx, y: my, life: 0, r: 3 + speed * 0.5 });
+    if (trail.length > 34) trail.shift();
+    /* fast movement sheds a ring */
+    if (d > 26 && rings.length < 8) rings.push({ x: mx, y: my, r: 6, life: 0, max: 190, w: 1 });
+  }, { passive: true });
 
-  /* rings emit on a slow cadence from a drifting origin */
-  let rings = [];
-  let nextRing = 0;
-
-  let mx = -1, my = -1;
-  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  addEventListener('pointerdown', e => {
+    for (let i = 0; i < 3; i++)
+      rings.push({ x: e.clientX, y: e.clientY, r: 4 + i * 14, life: -i * 8, max: 300, w: 1.4 });
+  }, { passive: true });
 
   let hidden = false;
   document.addEventListener('visibilitychange', () => { hidden = document.hidden; });
 
-  const poly = (x, y, r, sides, rot) => {
-    ctx.beginPath();
-    for (let i = 0; i <= sides; i++) {
-      const a = rot + (i / sides) * Math.PI * 2;
-      const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r;
-      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-    }
-    ctx.stroke();
-  };
-
-  let t = 0;
   const draw = () => {
     requestAnimationFrame(draw);
     if (hidden) return;
-    t += 1;
     ctx.clearRect(0, 0, W, H);
+    speed *= 0.92;
 
-    const drift = scrollY * 0.02;
-
-    shapes.forEach(s => {
-      s.x += s.vx; s.y += s.vy; s.rot += s.spin;
-      if (s.x < -0.25) s.x = 1.25; if (s.x > 1.25) s.x = -0.25;
-      if (s.y < -0.25) s.y = 1.25; if (s.y > 1.25) s.y = -0.25;
-
-      let px = s.x * W, py = s.y * H - (drift * s.depth) % (H + 400);
-      if (py < -260) py += H + 400;
-
-      /* a shape near the pointer leans toward it */
-      if (mx > 0) {
-        const dx = mx - px, dy = my - py;
-        const d = Math.hypot(dx, dy);
-        if (d < 320) { const k = (1 - d / 320) * 16; px += (dx / d) * k; py += (dy / d) * k; }
-      }
-
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = s.hot
-        ? `rgba(255,90,31,${0.11 * s.depth})`
-        : `rgba(255,255,255,${0.055 * s.depth})`;
-      poly(px, py, s.r, s.sides, s.rot);
+    /* wake — a soft comet tail behind the cursor */
+    trail.forEach((p, i) => {
+      p.life += 1;
+      const k = i / trail.length;
+      const fade = k * (1 - p.life / 46);
+      if (fade <= 0) return;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (1 + p.life * 0.05), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,90,31,${0.05 * fade})`;
+      ctx.fill();
     });
+    trail = trail.filter(p => p.life < 46);
 
-    if (t > nextRing) {
-      nextRing = t + rnd(150, 300);
-      rings.push({ x: rnd(0.15, 0.85) * W, y: rnd(0.2, 0.8) * H, r: 0, life: 0 });
-      if (rings.length > 4) rings.shift();
-    }
-    rings = rings.filter(r => r.life < 300);
+    /* rings */
     rings.forEach(r => {
-      r.life += 1; r.r += 1.15;
-      const fade = 1 - r.life / 300;
-      for (let k = 0; k < 3; k++) {
-        ctx.beginPath();
-        ctx.arc(r.x, r.y, r.r - k * 26, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255,90,31,${0.09 * fade * (1 - k * 0.28)})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
+      r.life += 1;
+      if (r.life < 0) return;
+      r.r += 2.6;
+      const fade = 1 - r.life / r.max;
+      if (fade <= 0) return;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255,90,31,${0.34 * fade})`;
+      ctx.lineWidth = r.w;
+      ctx.stroke();
     });
+    rings = rings.filter(r => r.life < r.max);
+
+    /* a lattice that only lights up near the pointer */
+    if (mx > -900) {
+      const G = 46, R = 190;
+      const x0 = Math.max(0, mx - R), x1 = Math.min(W, mx + R);
+      const y0 = Math.max(0, my - R), y1 = Math.min(H, my + R);
+      for (let x = Math.floor(x0 / G) * G; x <= x1; x += G) {
+        for (let y = Math.floor(y0 / G) * G; y <= y1; y += G) {
+          const d = Math.hypot(x - mx, y - my);
+          if (d > R) continue;
+          const k = 1 - d / R;
+          const push = k * 12;
+          const ang = Math.atan2(y - my, x - mx);
+          const px = x + Math.cos(ang) * push, py = y + Math.sin(ang) * push;
+          ctx.beginPath();
+          ctx.arc(px, py, 1 + k * 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${0.05 + k * 0.3})`;
+          ctx.fill();
+        }
+      }
+    }
   };
   requestAnimationFrame(draw);
-  requestAnimationFrame(() => cv.classList.add('is-on'));
+  cv.classList.add('is-on');
+}
+
+/* ══ 12c. HOVER SCRUB ══════════════════════════════════════
+   Mouse X walks the clip's timeline. One pass across a tile previews the
+   entire ad — far more useful than waiting 15s for a loop. */
+function scrub (root) {
+  if (TOUCH || RM) return;
+  root.addEventListener('mouseenter', e => {
+    const card = e.target.closest?.('.vcard'); if (!card) return;
+    card.classList.add('is-scrub');
+  }, true);
+  root.addEventListener('mouseleave', e => {
+    const card = e.target.closest?.('.vcard'); if (!card) return;
+    card.classList.remove('is-scrub');
+    const v = $('video', card);
+    if (v && v.src) v.play().catch(() => {});
+  }, true);
+
+  let queued = null;
+  root.addEventListener('mousemove', e => {
+    const card = e.target.closest?.('.vcard'); if (!card) return;
+    queued = [card, e.clientX];
+    if (queued.raf) return;
+    requestAnimationFrame(() => {
+      if (!queued) return;
+      const [c, x] = queued; queued = null;
+      const v = $('video', c); if (!v) return;
+      if (!v.src) v.src = v.dataset.src;
+      const r = c.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (x - r.left) / r.width));
+      if (v.duration) {
+        v.pause();
+        v.currentTime = p * v.duration;
+        const bar = $('.vcard__scrub i', c);
+        if (bar) bar.style.width = (p * 100) + '%';
+      }
+    });
+  }, true);
+}
+
+/* ══ 12d. MAGNETIC CONTROLS ════════════════════════════════ */
+function magnetic () {
+  if (TOUCH || RM) return;
+  const targets = $$('.btn, .fpanel__play, .chip');
+  targets.forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      el.style.transform = `translate(${dx * 0.22}px, ${dy * 0.3}px)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+}
+
+/* ══ 12e. HERO SPOTLIGHT ═══════════════════════════════════
+   The scrim carries a hole that follows the pointer, so the footage is
+   literally revealed by the reader. */
+function spotlight () {
+  if (TOUCH || RM) return;
+  const hero = $('#hero'), scrim = $('.hero__scrim');
+  if (!hero || !scrim) return;
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    scrim.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    scrim.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  }, { passive: true });
+}
+
+/* ══ 12f. ARCHIVE TILT ═════════════════════════════════════ */
+function tilt (root) {
+  if (TOUCH || RM) return;
+  root.addEventListener('mousemove', e => {
+    const c = e.target.closest?.('.acell'); if (!c) return;
+    const r = c.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    c.style.transform = `scale(1.045) rotateY(${px * 11}deg) rotateX(${-py * 11}deg)`;
+  }, true);
+  root.addEventListener('mouseleave', e => {
+    const c = e.target.closest?.('.acell'); if (!c) return;
+    c.style.transform = '';
+  }, true);
+}
+
+/* ══ 12g. DRAG ENGINE ══════════════════════════════════════
+   Drag with inertia, idle drift, seamless wrap. Shared by the film band,
+   the campaign wall and the archive wall. */
+function marquee (host, track, speed) {
+  if (RM) return;
+  let x = 0, v = 0, down = false, sx = 0, sOff = 0, idle = true, moved = 0;
+  const half = () => (track.scrollWidth / 2) || 1;
+  const wrap = n => ((n % half()) + half()) % half();
+
+  host.addEventListener('pointerdown', e => {
+    down = true; idle = false; moved = 0; sx = e.clientX; sOff = x;
+    host.classList.add('is-drag');
+    try { host.setPointerCapture(e.pointerId); } catch {}
+  });
+  host.addEventListener('pointermove', e => {
+    if (!down) return;
+    moved = Math.abs(e.clientX - sx);
+    const nx = sOff - (e.clientX - sx);
+    v = nx - x; x = nx;
+  });
+  const up = () => { down = false; host.classList.remove('is-drag'); };
+  host.addEventListener('pointerup', up);
+  host.addEventListener('pointercancel', up);
+  host.addEventListener('mouseenter', () => { idle = false; });
+  host.addEventListener('mouseleave', () => { if (!down) idle = true; });
+  host.addEventListener('click', e => {
+    if (moved > 6) { e.stopPropagation(); e.preventDefault(); }   // drag isn't a click
+  }, true);
+
+  const step = () => {
+    requestAnimationFrame(step);
+    if (!down) {
+      if (Math.abs(v) > 0.08) { x += v; v *= 0.94; }
+      else if (idle) x += speed;
+    }
+    track.style.transform = `translateX(${-wrap(x)}px)`;
+  };
+  requestAnimationFrame(step);
+}
+
+/* ══ 12h. STICKY CTA ═══════════════════════════════════════
+   The enquiry form is the point of the page, so the route to it rides with
+   the reader instead of waiting at the bottom. Retracts once the form shows. */
+function stickyCta () {
+  const cta = $('#cta'), contact = $('#contact');
+  if (!cta) return;
+  const on = () => {
+    const past = scrollY > innerHeight * 0.7;
+    const atForm = contact && contact.getBoundingClientRect().top < innerHeight * 0.8;
+    cta.classList.toggle('is-on', past && !atForm);
+  };
+  addEventListener('scroll', on, { passive: true });
+  on();
 }
 
 /* ══ 13. FUNNEL FORMS ══════════════════════════════════════
@@ -822,5 +932,6 @@ function deepLink () {
 /* ══ GO ════════════════════════════════════════════════════ */
 boot(); cursor(); chrome(); counts(); reveal(); heroFilm(); ticker();
 awardFilm(); featured(); reel(); band(); work(); archive(); ambient(); forms(); deepLink();
+scrub($('#reelGroups')); magnetic(); spotlight(); stickyCta();
 
 })();

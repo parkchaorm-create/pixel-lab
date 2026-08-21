@@ -37,9 +37,7 @@
     <span class="nav__word">PIXEL LAB</span>
   </a>
   <nav class="nav__links">
-    <a href="#problem" data-scroll>왜 안 팔리나</a>
-    <a href="#film" data-scroll>수상작</a>
-    <a href="#feat" data-scroll>작업</a>
+    <a href="#feat" data-scroll>작업 보기</a>
     <a href="#plan" data-scroll>진행 방식</a>
     <a href="#guide" data-scroll>무료 가이드</a>
   </nav>
@@ -47,12 +45,16 @@
   <button class="nav__burger" id="burger" aria-label="메뉴"><i></i><i></i></button>
 </header>
 <div class="drawer" id="drawer">
-  <a href="#problem" data-scroll>왜 안 팔리나</a>
-  <a href="#film" data-scroll>수상작</a>
-  <a href="#feat" data-scroll>작업</a>
+  <a href="#feat" data-scroll>작업 보기</a>
   <a href="#plan" data-scroll>진행 방식</a>
   <a href="#guide" data-scroll>무료 가이드</a>
   <a href="#contact" data-scroll>무료 상담 신청</a>
+</div>
+
+<div class="cta" id="cta" aria-hidden="false">
+  <span class="cta__txt">촬영 없이 3일. 상담은 무료입니다.</span>
+  <a href="#guide" class="btn btn--sm" data-scroll data-cursor="가이드">가이드 받기</a>
+  <a href="#contact" class="btn btn--sm btn--fill" data-scroll data-cursor="상담">무료 상담 신청</a>
 </div>
 
 <main id="top">
@@ -152,13 +154,51 @@
   </div>
 </section>
 
+<!-- ░░ LEAD MAGNET ░░ -->
+<section class="lead" id="guide">
+  <div class="wrap lead__in">
+    <div class="lead__copy">
+      <p class="eyebrow reveal">03 — FREE GUIDE</p>
+      <h2 class="lead__h2 reveal">상세페이지,<br>어떤 컷부터 만들어야 할까요?</h2>
+      <p class="lead__sub reveal">브랜드 34곳의 상세페이지 <b>542컷</b>을 만들면서 정리한 구성 순서를 한 편으로 압축했습니다.
+        컷 순서, 각 컷이 답해야 할 고객의 질문, 흔한 실수까지.</p>
+      <ul class="lead__list reveal">
+        <li>구매까지 필요한 <b>15개 컷</b>과 그 순서</li>
+        <li>컷마다 고객이 속으로 던지는 질문</li>
+        <li>전환을 깎아먹는 <b>7가지 실수</b></li>
+        <li>촬영 없이 만들 때의 체크리스트</li>
+      </ul>
+
+      <form class="lead__form reveal" id="leadForm" novalidate>
+        <div class="field">
+          <label for="leadEmail">이메일</label>
+          <input type="email" id="leadEmail" name="email" placeholder="you@company.com" required autocomplete="email">
+        </div>
+        <button type="submit" class="btn btn--fill" data-cursor="받기">무료로 받기</button>
+        <p class="lead__fine">가이드 발송에만 사용합니다. 광고 메일을 보내지 않고, 언제든 삭제 요청하실 수 있습니다.</p>
+        <div class="formmsg" id="leadMsg" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <aside class="lead__art reveal" aria-hidden="true">
+      <div class="lead__paper">
+        <span class="lead__tag">PIXEL LAB GUIDE</span>
+        <b>팔리는 상세페이지<br>15컷 구성 가이드</b>
+        <i>542컷에서 뽑아낸 순서</i>
+        <div class="lead__rows"><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
 <!-- ░░ AWARD FILM ░░ -->
 <section class="film" id="film">
   <div class="wrap">
     <header class="sec__head reveal">
-      <span class="sec__no">03</span>
-      <h2 class="sec__title">이런 이야기까지 만듭니다.</h2>
-      <p class="sec__desc">GAMFF 경북 AI메타버스 콘텐츠 공모전 · 광고부문 수상작</p>
+      <span class="sec__no">04</span>
+      <h2 class="sec__title">당신의 제품에도<br>이야기가 있습니다.</h2>
+      <p class="sec__desc">기능만 나열하면 비교당하고, 이야기가 붙으면 기억됩니다. 아래는 그 방식으로 만든 산업 안전장비 브랜드 필름입니다. <b>GAMFF 광고부문 수상작</b>.</p>
     </header>
 
     <div class="film__stage reveal">
@@ -207,7 +247,7 @@
 <section class="reel" id="reel">
   <div class="wrap">
     <header class="sec__head reveal">
-      <span class="sec__no">04</span>
+      <span class="sec__no">05</span>
       <h2 class="sec__title">당신의 카테고리에서<br>어떻게 보일지 확인해보세요.</h2>
       <p class="sec__desc">마우스를 올리면 재생됩니다 · 클릭하면 소리와 함께 전체 화면</p>
     </header>
@@ -224,12 +264,12 @@
 <section class="work" id="work">
   <div class="wrap">
     <header class="sec__head reveal">
-      <span class="sec__no">05</span>
+      <span class="sec__no">06</span>
       <h2 class="sec__title">상세페이지는 한 컷이 아니라<br>한 세트로 팝니다.</h2>
       <p class="sec__desc"><b id="brandCount">34</b>개 브랜드 · 히어로컷부터 기능 콜아웃 · 사이즈 도해 · 라이프스타일 · How-to · 패키지까지</p>
     </header>
     <div class="chips" id="workChips"></div>
-    <div class="work__grid" id="workGrid"></div>
+    <div class="hwall hwall--work" id="workGrid"></div>
   </div>
 </section>
 
@@ -237,13 +277,15 @@
 <section class="archive" id="archive">
   <div class="wrap">
     <header class="sec__head reveal">
-      <span class="sec__no">06</span>
-      <h2 class="sec__title">전체 아카이브</h2>
-      <p class="sec__desc"><b id="archCount">542</b>컷 · 스크롤하면 계속 불러옵니다</p>
+      <span class="sec__no">07</span>
+      <h2 class="sec__title">당신 제품과 닮은 컷을<br>먼저 찾아보세요.</h2>
+      <p class="sec__desc">지금까지 만든 <b id="archCount">537</b>컷 전부입니다. 드래그해서 넘기고, 클릭하면 크게 보입니다.</p>
     </header>
   </div>
-  <div class="archive__grid" id="archGrid"></div>
-  <div class="archive__more"><button class="btn" id="archMore" data-cursor="더보기">더 불러오기</button></div>
+  <div class="hwall" id="archGrid"></div>
+  <div class="wrap archive__more">
+    <button class="btn" id="archMore" data-cursor="전체">537컷 전체 보기</button>
+  </div>
 </section>
 
 <!-- ░░ PLAN ░░ -->
@@ -278,43 +320,6 @@
       <a href="#contact" class="btn btn--fill" data-scroll data-cursor="상담">무료 상담 신청</a>
       <span class="plan__note">상담은 무료이고, 계약을 권하지 않습니다. 맞지 않으면 맞지 않는다고 말씀드립니다.</span>
     </div>
-  </div>
-</section>
-
-<!-- ░░ LEAD MAGNET ░░ -->
-<section class="lead" id="guide">
-  <div class="wrap lead__in">
-    <div class="lead__copy">
-      <p class="eyebrow reveal">FREE GUIDE</p>
-      <h2 class="lead__h2 reveal">상세페이지,<br>어떤 컷부터 만들어야 할까요?</h2>
-      <p class="lead__sub reveal">브랜드 34곳의 상세페이지 <b>542컷</b>을 만들면서 정리한 구성 순서를 한 편으로 압축했습니다.
-        컷 순서, 각 컷이 답해야 할 고객의 질문, 흔한 실수까지.</p>
-      <ul class="lead__list reveal">
-        <li>구매까지 필요한 <b>15개 컷</b>과 그 순서</li>
-        <li>컷마다 고객이 속으로 던지는 질문</li>
-        <li>전환을 깎아먹는 <b>7가지 실수</b></li>
-        <li>촬영 없이 만들 때의 체크리스트</li>
-      </ul>
-
-      <form class="lead__form reveal" id="leadForm" novalidate>
-        <div class="field">
-          <label for="leadEmail">이메일</label>
-          <input type="email" id="leadEmail" name="email" placeholder="you@company.com" required autocomplete="email">
-        </div>
-        <button type="submit" class="btn btn--fill" data-cursor="받기">무료로 받기</button>
-        <p class="lead__fine">가이드 발송에만 사용합니다. 광고 메일을 보내지 않고, 언제든 삭제 요청하실 수 있습니다.</p>
-        <div class="formmsg" id="leadMsg" role="status" aria-live="polite"></div>
-      </form>
-    </div>
-
-    <aside class="lead__art reveal" aria-hidden="true">
-      <div class="lead__paper">
-        <span class="lead__tag">PIXEL LAB GUIDE</span>
-        <b>팔리는 상세페이지<br>15컷 구성 가이드</b>
-        <i>542컷에서 뽑아낸 순서</i>
-        <div class="lead__rows"><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s></div>
-      </div>
-    </aside>
   </div>
 </section>
 
