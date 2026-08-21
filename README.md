@@ -75,8 +75,15 @@ const FORM = {
 
 ### 리드마그넷 PDF
 
-`assets/guide/pixel-lab-detail-page-guide.pdf` — 「팔리는 상세페이지 15컷 구성 가이드」 4쪽.
-내용을 고치려면 같은 폴더의 `_source.html`을 수정한 뒤 브라우저에서 인쇄 → PDF로 저장하세요.
+`assets/guide/pixel-lab-motion-guide.pdf` — 「사진으로 안 되는 것을 움직임으로 파는 법」 4쪽.
+내용을 고치려면 같은 폴더의 `_source.html`을 수정한 뒤 브라우저에서 인쇄 → PDF로 저장하고,
+표지 미리보기 이미지(`assets/guide/pages/p1~4.webp`)도 같이 갱신하세요.
+
+### 데이터 섹션의 수치
+
+`#data` 섹션 숫자는 **외부 조사·플랫폼 공개 자료**이며 Pixel Lab의 성과가 아닙니다.
+섹션 하단에 출처 링크가 달려 있고, 본문에도 그렇게 명시했습니다.
+자사 실적 수치가 생기면 별도 섹션으로 분리해 표기해 주세요 (섞으면 안 됩니다).
 
 ### 그 외 다듬을 수 있는 곳
 

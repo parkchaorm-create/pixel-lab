@@ -534,7 +534,7 @@ function paint () {
   const it = items[idx];
   lbStage.innerHTML = it.type === 'video'
     ? `<video src="${VID(it.id)}" poster="${POST(it.id)}" controls autoplay playsinline></video>`
-    : `<img src="${IMGF(it.id)}" alt="${it.title} ${it.sub}">`;
+    : `<img src="${it.src || IMGF(it.id)}" alt="${it.title} ${it.sub}">`;
   $('#lbTitle').textContent = it.title;
   $('#lbSub').textContent   = it.sub;
   $('#lbIdx').textContent   = idx + 1;
@@ -824,7 +824,7 @@ function stickyCta () {
 const FORM = {
   ENDPOINT: '',                               // ← paste your form endpoint here
   MAILTO:   'hello@pixellab.kr',              // ← and your real inbox here
-  GUIDE:    'assets/guide/pixel-lab-detail-page-guide.pdf',
+  GUIDE:    'assets/guide/pixel-lab-motion-guide.pdf',
 };
 
 function forms () {
@@ -909,6 +909,15 @@ function forms () {
     } catch {
       say(cm, 'err', `전송에 실패했습니다. <a href="mailto:${FORM.MAILTO}">${FORM.MAILTO}</a> 로 보내주세요.`);
     } finally { btn.disabled = false; btn.textContent = '문의 보내기'; }
+  });
+
+  /* let them look inside before handing over an email — desire before ask */
+  const stack = $('#leadStack');
+  if (stack) stack.addEventListener('click', () => {
+    openLB([1, 2, 3, 4].map(n => ({
+      type: 'image', id: null, src: `assets/guide/pages/p${n}.webp`,
+      title: '제품 모션그래픽 설계 가이드', sub: `${n} / 4쪽 · 무료 PDF`,
+    })), 0);
   });
 
   /* clear the error state as soon as the visitor fixes it */
