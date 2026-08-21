@@ -863,8 +863,8 @@ function forms () {
     const btn = $('button', lf);
     btn.disabled = true; btn.textContent = '보내는 중…';
     try {
-      const how = await send({ form: '가이드 신청', email: email.value.trim() },
-                             '[Pixel Lab] 상세페이지 가이드 신청');
+      const how = await send({ form: '템플릿 신청', email: email.value.trim() },
+                             '[Pixel Lab] 영상 기획서 템플릿 신청');
       say(lm, 'ok', how === 'sent'
         ? `신청 완료. 메일함을 확인해주세요.<br><a href="${FORM.GUIDE}" download>바로 내려받기</a>`
         : `메일 앱이 열립니다. 그대로 보내주시면 가이드를 보내드립니다.<br><a href="${FORM.GUIDE}" download>지금 바로 내려받기</a>`);
@@ -916,7 +916,7 @@ function forms () {
   if (stack) stack.addEventListener('click', () => {
     openLB([1, 2, 3, 4].map(n => ({
       type: 'image', id: null, src: `assets/guide/pages/p${n}.webp`,
-      title: '제품 모션그래픽 설계 가이드', sub: `${n} / 4쪽 · 무료 PDF`,
+      title: '제품영상 기획서 템플릿', sub: `${n} / 4쪽 · 인쇄해서 채우세요`,
     })), 0);
   });
 

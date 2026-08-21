@@ -3,7 +3,7 @@
 <style>
 @page{size:A4;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Pretendard Variable',Pretendard,sans-serif;color:#14161a;word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{word-break:keep-all;font-family:'Pretendard Variable',Pretendard,sans-serif;color:#14161a;word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pg{width:210mm;height:297mm;padding:20mm 18mm;position:relative;page-break-after:always;background:#fff;display:flex;flex-direction:column}
 .pg:last-child{page-break-after:auto}
 .mark{display:flex;align-items:center;gap:8px;font:800 10px/1 sans-serif;letter-spacing:.2em}
@@ -32,76 +32,125 @@ h2{font-size:19px;letter-spacing:-.025em;font-weight:700;margin:6px 0 14px}
 .fno{position:absolute;left:18mm;bottom:11mm;font:700 9px/1 sans-serif;letter-spacing:.16em;color:#a9aeb6}
 .chk{display:grid;gap:8px;margin-top:6px}
 .chk li{list-style:none;display:grid;grid-template-columns:15px 1fr;gap:9px;font-size:12px;line-height:1.6;color:#3e444d}
+.chk li span{display:block}
 .chk li s{width:13px;height:13px;border:1.5px solid #14161a;border-radius:3px;margin-top:3px;display:block;text-decoration:none}
 .cover-art{margin-top:8px;display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
 .artcap{margin-top:auto;font:700 9px/1 sans-serif;letter-spacing:.16em;color:#a9aeb6;padding-bottom:4px}
 .cover-art s{aspect-ratio:16/9;background:#eeebe6 center/cover no-repeat;border-radius:4px;display:block;text-decoration:none}
 
 
+
+.tpl{border:1.5px solid #14161a;border-radius:8px;overflow:hidden;margin-top:4px}
+.tpl__r{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid #ddd9d2;break-inside:avoid}
+.tpl__r:last-child{border-bottom:0}
+.tpl__t{background:#14161a;color:#fff;font:800 12px/1.1 sans-serif;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;padding:12px 4px;letter-spacing:-.02em}
+.tpl__t s{text-decoration:none;font-size:8px;font-weight:600;opacity:.62;letter-spacing:.06em}
+.tpl__c{padding:11px 13px}
+.tpl__c h4{font-size:12px;font-weight:700;margin-bottom:2px}
+.tpl__c p{font-size:10.5px;color:#7c828b;line-height:1.5;margin-bottom:7px}
+.tpl__c u{display:block;border-bottom:1px dashed #b9b4ab;height:15px;text-decoration:none}
+.tpl__c u+u{margin-top:7px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:4px}
+.pick li{list-style:none;display:grid;grid-template-columns:14px 1fr;gap:8px;break-inside:avoid;padding:6px 0;border-bottom:1px solid #e8e5e0}
+.pick li s{width:12px;height:12px;border:1.5px solid #14161a;border-radius:3px;margin-top:2px;display:block;text-decoration:none}
+.pick b{font-size:11.5px;font-weight:700;display:block}
+.pick i{font-style:normal;font-size:10px;color:#7c828b;line-height:1.45;display:block;margin-top:1px}
+.ck{display:grid;gap:0;margin-top:2px}
+.ck li{list-style:none;display:grid;grid-template-columns:15px 1fr;gap:9px;padding:8px 0;border-bottom:1px solid #e8e5e0;break-inside:avoid}
+.ck li s{width:13px;height:13px;border:1.5px solid #14161a;border-radius:3px;margin-top:2px;display:block;text-decoration:none}
+.ck b{font-size:11.5px;font-weight:700}
+.ck i{font-style:normal;font-size:10.5px;color:#7c828b;display:block;line-height:1.5;margin-top:1px}
+.hint{background:#fdf1ea;border-left:3px solid #ff5a1f;padding:9px 12px;border-radius:0 6px 6px 0;margin-top:10px}
+.hint p{font-size:10.5px;line-height:1.6;color:#5a4a42}
 </style></head><body>
 
 <div class="pg">
   <div class="mark"><i><s></s><s></s><s></s><s></s></i>PIXEL LAB</div>
-  <h1>사진으로 안 되는 것을<br><em>움직임</em>으로 파는 법</h1>
-  <p class="lede">제품 모션그래픽 23편을 만들면서 정리한 설계도입니다.
-  작동 원리, 내부 구조, 사용 순서, 크기 — <b>정지된 사진으로는 끝내 전달되지 않는 것들을
-  15초 안에 보여주는 순서</b>에 대한 문서입니다.</p>
-  <p class="kicker" style="margin-top:14mm">이 문서로 알 수 있는 것</p>
+  <h1>빈칸만 채우면<br>그대로 <em>발주서</em>가 됩니다</h1>
+  <p class="lede">제품영상을 만들어야 하는 건 아는데, <b>뭘 어떻게 요청해야 할지</b> 막막하셨다면.
+  제품 모션그래픽 23편을 만들며 쓰던 기획 양식을 그대로 열어드립니다.
+  인쇄해서 손으로 채우셔도 되고, 채운 걸 그대로 업체에 넘기셔도 됩니다.</p>
+  <p class="kicker" style="margin-top:12mm">들어 있는 것</p>
   <ul class="chk">
-    <li><s></s>사진이 못 하고 모션그래픽만 하는 5가지</li>
-    <li><s></s>15초를 나누는 4비트 구조와 각 비트의 임무</li>
-    <li><s></s>첫 3초를 붙잡는 훅 장치 8가지</li>
-    <li><s></s>비트마다 맞는 카메라 무빙과 컷 길이</li>
-    <li><s></s>조회수를 태우는 7가지 실수</li>
+    <li><s></s><span>15초를 나누는 <b>4비트 기획 템플릿</b> — 빈칸 채우기</span></li>
+    <li><s></s><span>내 제품에 맞는 <b>훅 8가지 선택표</b></span></li>
+    <li><s></s><span>견적 받기 전 <b>확인할 12가지</b></span></li>
+    <li><s></s><span>채운 그대로 업체에 전달 가능</span></li>
   </ul>
-  <p class="artcap">광고 영상 23편 · 모션그래픽 · GAMFF 광고부문 수상</p>
+  <div class="hint"><p><b>왜 이게 필요한가:</b> 브리프 없이 발주하면 시안이 산으로 가고,
+  수정이 늘고, 결국 비용이 늘어납니다. 이 한 장이 그 왕복을 줄입니다.</p></div>
+  <p class="artcap">제품 모션그래픽 23편 · GAMFF 광고부문 수상</p>
   <div class="cover-art"><s style="background-image:url(../poster/w01.jpg)"></s><s style="background-image:url(../poster/w03.jpg)"></s><s style="background-image:url(../poster/w18.jpg)"></s><s style="background-image:url(../poster/w22.jpg)"></s><s style="background-image:url(../poster/w15.jpg)"></s><s style="background-image:url(../poster/w20.jpg)"></s><s style="background-image:url(../poster/w21.jpg)"></s><s style="background-image:url(../poster/w16.jpg)"></s><s style="background-image:url(../poster/w17.jpg)"></s><s style="background-image:url(../poster/w19.jpg)"></s></div>
-  <div class="fno">PIXEL LAB — 제품 모션그래픽 설계법 · 01</div>
+  <div class="fno">PIXEL LAB — 제품영상 기획서 템플릿 · 01</div>
 </div>
 
 <div class="pg">
-  <p class="kicker">WHY MOTION</p>
-  <h2>사진이 못 하는 다섯 가지</h2><div class="rule"></div>
-  <div class="cut"><b>01</b><div><h3>보이지 않는 것을 보여준다</h3><p>내부 구조, 필터가 걸러내는 것, 성분이 흡수되는 과정. 분해도와 단면은 사진으로 찍을 수 없습니다.</p><q>안에서 뭐가 일어나는 거지?</q></div></div>
-  <div class="cut"><b>02</b><div><h3>시간을 압축한다</h3><p>설치 3단계, 8시간 지속, 한 달의 변화. 긴 시간을 5초로 접는 것은 움직임만 할 수 있습니다.</p><q>얼마나 오래 가는데?</q></div></div>
-  <div class="cut"><b>03</b><div><h3>크기를 오해 없이 전한다</h3><p>손이 들어오고, 옆에 컵이 놓이고, 서랍에 들어갑니다. 반품 사유 1위가 크기 오해입니다.</p><q>생각보다 큰가?</q></div></div>
-  <div class="cut"><b>04</b><div><h3>감각을 옮긴다</h3><p>무게, 점도, 마찰, 접히는 저항. 물성은 정지 화면에서 사라지고 움직임에서 살아납니다.</p><q>싸구려는 아닐까?</q></div></div>
-  <div class="cut"><b>05</b><div><h3>피드에서 살아남는다</h3><p>정지 이미지가 얻는 시간은 0.2초 남짓. 움직임은 그 손가락을 붙잡는 유일한 장치입니다.</p><q>(스크롤이 멈춘다)</q></div></div>
-  <div class="fno">PIXEL LAB — 제품 모션그래픽 설계법 · 02</div>
+  <p class="kicker">TEMPLATE 1</p>
+  <h2>15초 기획서 — 채워보세요</h2><div class="rule"></div>
+  <div class="tpl">
+    <div class="tpl__r"><div class="tpl__t">0–3<s>초</s></div><div class="tpl__c">
+      <h4>훅 — 손가락을 멈추게 할 첫 화면</h4>
+      <p>제품이 아니라 ‘이상한 것’부터. 로고는 여기에 넣지 않습니다.</p><u></u><u></u></div></div>
+    <div class="tpl__r"><div class="tpl__t">3–7<s>초</s></div><div class="tpl__c">
+      <h4>문제 — 고객이 겪는 불편</h4>
+      <p>설명하지 말고 상황으로 보여줍니다.</p><u></u><u></u></div></div>
+    <div class="tpl__r"><div class="tpl__t">7–12<s>초</s></div><div class="tpl__c">
+      <h4>해결 — 제품이 등장하는 방식</h4>
+      <p>첫 등장에는 반드시 움직임을. 회전·분해·낙하 중 하나.</p><u></u><u></u></div></div>
+    <div class="tpl__r"><div class="tpl__t">12–15<s>초</s></div><div class="tpl__c">
+      <h4>행동 — 딱 하나만 시킵니다</h4>
+      <p>브랜드명 + 한 가지 행동. 둘을 시키면 아무것도 안 합니다.</p><u></u></div></div>
+    <div class="tpl__r"><div class="tpl__t">공통</div><div class="tpl__c">
+      <h4>한 문장 목표 · 비율 · 무음 대응</h4>
+      <p>“이 영상 하나로 무엇을 시킬 것인가” / 9:16 · 1:1 · 16:9 / 자막 없이 이해되는가</p><u></u><u></u></div></div>
+  </div>
+  <div class="hint"><p>메시지는 <b>하나</b>만 담습니다. 15초에 둘을 넣으면 둘 다 남지 않습니다.</p></div>
+  <div class="fno">PIXEL LAB — 제품영상 기획서 템플릿 · 02</div>
 </div>
 
 <div class="pg">
-  <p class="kicker">THE HOOK</p>
-  <h2>첫 3초를 붙잡는 8가지</h2><div class="rule"></div>
-  <div class="cut"><b>01</b><div><h3>예상 밖 움직임</h3><p>칼이 토마토를 가르고, 액체가 역방향으로 솟습니다. 물리가 어긋나면 눈이 멈춥니다.</p></div></div>
-  <div class="cut"><b>02</b><div><h3>극단적 클로즈업</h3><p>무엇인지 모를 만큼 붙습니다. 정체를 알고 싶어서 계속 봅니다.</p></div></div>
-  <div class="cut"><b>03</b><div><h3>얼굴과 눈맞춤</h3><p>사람 얼굴, 특히 카메라를 보는 눈은 스크롤을 물리적으로 늦춥니다.</p></div></div>
-  <div class="cut"><b>04</b><div><h3>강한 색 대비</h3><p>피드는 대체로 흽니다. 첫 프레임이 어둡거나 채도가 튀면 그 자체로 훅입니다.</p></div></div>
-  <div class="cut"><b>05</b><div><h3>숫자로 시작</h3><p>“하루 4시간”, “3일”. 구체적인 수는 추상적인 형용사를 이깁니다.</p></div></div>
-  <div class="cut"><b>06</b><div><h3>파괴 · 변형</h3><p>부서지고, 녹고, 터집니다. 되돌릴 수 없는 변화는 끝을 보게 만듭니다.</p></div></div>
-  <div class="cut"><b>07</b><div><h3>질문형 첫 컷</h3><p>답을 주지 않은 채 상황만 던집니다. 미완결은 이탈을 막습니다.</p></div></div>
-  <div class="cut"><b>08</b><div><h3>소리의 선행</h3><p>화면보다 0.3초 먼저 들어오는 소리. 켜둔 사람에게는 가장 강한 훅입니다.</p></div></div>
-  <div class="fno">PIXEL LAB — 제품 모션그래픽 설계법 · 03</div>
+  <p class="kicker">TEMPLATE 2</p>
+  <h2>훅 고르기 — 하나만 체크</h2><div class="rule"></div>
+  <ul class="pick">
+    <li><s></s><div><b>예상 밖 움직임</b><i>물리가 어긋나면 눈이 멈춥니다. 액체가 솟거나 역재생.</i></div></li>
+    <li><s></s><div><b>극단적 클로즈업</b><i>정체를 모를 만큼 붙입니다. 궁금해서 계속 봅니다.</i></div></li>
+    <li><s></s><div><b>얼굴 · 눈맞춤</b><i>카메라를 보는 눈은 스크롤을 물리적으로 늦춥니다.</i></div></li>
+    <li><s></s><div><b>강한 색 대비</b><i>피드는 대체로 흽니다. 어둡거나 채도가 튀면 그 자체로 훅.</i></div></li>
+    <li><s></s><div><b>숫자로 시작</b><i>“하루 4시간”, “3일”. 구체적 수가 형용사를 이깁니다.</i></div></li>
+    <li><s></s><div><b>파괴 · 변형</b><i>부서지고 녹고 터집니다. 되돌릴 수 없는 변화는 끝을 보게 합니다.</i></div></li>
+    <li><s></s><div><b>질문형 첫 컷</b><i>답을 주지 않고 상황만. 미완결이 이탈을 막습니다.</i></div></li>
+    <li><s></s><div><b>소리의 선행</b><i>화면보다 0.3초 먼저 오는 소리. 소리 켠 사람에게 가장 강합니다.</i></div></li>
+  </ul>
+  <div class="hint"><p>고른 훅을 <b>02쪽 0–3초 칸</b>에 옮겨 적으면 기획서의 절반이 끝납니다.</p></div>
+  <div class="fno">PIXEL LAB — 제품영상 기획서 템플릿 · 03</div>
 </div>
 
 <div class="pg">
-  <p class="kicker">PITFALLS</p>
-  <h2>조회수를 태우는 7가지</h2><div class="rule"></div>
-  <div class="mis"><b>01</b><div><h3>로고로 시작한다</h3><p>아무도 모르는 로고는 훅이 아닙니다. 브랜드는 마지막 3초에 넣으세요.</p></div></div>
-  <div class="mis"><b>02</b><div><h3>컷이 너무 길다</h3><p>15초 광고의 평균 컷 길이는 1.2~2초입니다. 4초 넘는 컷은 훅이 아니면 잘라내세요.</p></div></div>
-  <div class="mis"><b>03</b><div><h3>기능을 다 넣는다</h3><p>15초에 담기는 메시지는 하나입니다. 둘을 넣으면 둘 다 안 남습니다.</p></div></div>
-  <div class="mis"><b>04</b><div><h3>자막에 의존한다</h3><p>자막이 없으면 이해가 안 되는 영상은, 자막을 읽지 않는 절반을 잃습니다.</p></div></div>
-  <div class="mis"><b>05</b><div><h3>제품이 정지해 있다</h3><p>제품의 첫 등장에는 반드시 움직임을. 회전·조립·낙하 중 하나면 충분합니다.</p></div></div>
-  <div class="mis"><b>06</b><div><h3>음악이 비트와 안 맞는다</h3><p>컷 전환을 비트에 맞추기만 해도 완성도가 한 단계 올라갑니다.</p></div></div>
-  <div class="mis"><b>07</b><div><h3>CTA가 둘 이상이다</h3><p>“팔로우하고 링크도 눌러주세요”는 둘 다 안 누르게 만듭니다.</p></div></div>
+  <p class="kicker">CHECKLIST</p>
+  <h2>견적 받기 전 확인할 12가지</h2><div class="rule"></div>
+  <ul class="ck">
+    <li><s></s><div><b>영상 한 편의 목표가 한 문장으로 적혀 있는가</b><i>없으면 시안이 반드시 산으로 갑니다.</i></div></li>
+    <li><s></s><div><b>필요한 비율을 모두 적었는가</b><i>9:16 · 1:1 · 16:9. 나중에 요청하면 리사이즈가 아니라 재작업입니다.</i></div></li>
+    <li><s></s><div><b>납품 형식과 해상도를 정했는가</b><i>MP4 · 1080p 이상 · 자막 별도 파일 여부.</i></div></li>
+    <li><s></s><div><b>수정 횟수와 범위가 계약에 있는가</b><i>“몇 회까지, 어디까지”가 없으면 분쟁이 됩니다.</i></div></li>
+    <li><s></s><div><b>음원 라이선스 범위를 확인했는가</b><i>광고 집행·해외 송출까지 커버되는지.</i></div></li>
+    <li><s></s><div><b>제품 정보를 얼마나 줄 수 있는가</b><i>실측 치수, 재질, 내부 구조. 많을수록 시안이 정확해집니다.</i></div></li>
+    <li><s></s><div><b>자막 없이 이해되는 구조인가</b><i>피드의 절반은 무음 재생입니다.</i></div></li>
+    <li><s></s><div><b>첫 3초에 로고가 들어가 있지 않은가</b><i>아무도 모르는 로고는 훅이 아닙니다.</i></div></li>
+    <li><s></s><div><b>CTA가 하나인가</b><i>둘을 시키면 둘 다 하지 않습니다.</i></div></li>
+    <li><s></s><div><b>소재를 몇 개 만들 것인가</b><i>한 편만으로는 A/B 테스트가 불가능합니다.</i></div></li>
+    <li><s></s><div><b>일정에 검수 기간이 포함되어 있는가</b><i>납품일과 게시일 사이에 최소 2~3일.</i></div></li>
+    <li><s></s><div><b>원본 소스를 받을 수 있는가</b><i>나중에 다른 채널로 재편집할 때 필요합니다.</i></div></li>
+  </ul>
 
   <div class="box">
-    <div><b>이 구조대로, 촬영 없이 3일이면 나옵니다.</b>
-    <p>Pixel Lab은 광고 영상과 모션그래픽을 만드는 크리에이티브 팀입니다.<br>
-    2026 한국경제신문 AI 다큐멘터리 부문 최우수상 · GAMFF 광고부문 수상.</p></div>
+    <div><b>채우신 기획서, 그대로 보내주세요.</b>
+    <p>이 템플릿에 맞춰 보내주시면 견적과 방향을 하루 안에 회신드립니다.<br>
+    상담은 무료이고, 맞지 않으면 맞지 않는다고 말씀드립니다.</p></div>
     <span>무료 상담 신청</span>
   </div>
-  <div class="fno">PIXEL LAB — 제품 모션그래픽 설계법 · 04</div>
+  <div class="fno">PIXEL LAB — 제품영상 기획서 템플릿 · 04</div>
 </div>
 
 </body></html>
