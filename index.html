@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixel Lab — 광고 영상 크리에이티브 스튜디오</title>
+<meta name="description" content="Pixel Lab은 AI 프로덕션으로 광고 영상과 커머스 비주얼을 만드는 크리에이티브 팀입니다. 2026 한국경제신문 AI 다큐멘터리 부문 최우수상, GAMFF 경북 AI메타버스 콘텐츠 공모전 광고부문 수상.">
+<meta property="og:title" content="Pixel Lab — 광고 영상 크리에이티브 스튜디오">
+<meta property="og:description" content="0.1초 만에 멈추게 하는 장면을 만듭니다.">
+<meta property="og:image" content="assets/film/gamff-poster.jpg">
+<meta name="theme-color" content="#08090b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2308090b'/><rect x='7' y='7' width='8' height='8' fill='%23ff5a1f'/><rect x='17' y='17' width='8' height='8' fill='%23f2f3f5'/></svg>">
+</head>
+<body>
+
+<!-- ░░ preloader ░░ -->
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot__inner">
+    <div class="boot__mark"><i></i><i></i><i></i><i></i></div>
+    <div class="boot__label">PIXEL&nbsp;LAB</div>
+    <div class="boot__bar"><span id="bootBar"></span></div>
+  </div>
+</div>
+
+<!-- ░░ grain + cursor ░░ -->
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"><em id="cursorLabel"></em></span></div>
+<div class="scrollbar" aria-hidden="true"><span id="scrollBar"></span></div>
+
+<!-- ░░ nav ░░ -->
+<header class="nav" id="nav">
+  <a class="nav__logo" href="#top" data-cursor="홈">
+    <span class="nav__glyph"><i></i><i></i><i></i><i></i></span>
+    <span class="nav__word">PIXEL LAB</span>
+  </a>
+  <nav class="nav__links">
+    <a href="#film" data-scroll>수상작</a>
+    <a href="#reel" data-scroll>광고 영상</a>
+    <a href="#work" data-scroll>캠페인</a>
+    <a href="#archive" data-scroll>아카이브</a>
+    <a href="#studio" data-scroll>스튜디오</a>
+  </nav>
+  <a href="#contact" class="btn btn--sm" data-scroll data-cursor="문의">프로젝트 문의</a>
+  <button class="nav__burger" id="burger" aria-label="메뉴"><i></i><i></i></button>
+</header>
+<div class="drawer" id="drawer">
+  <a href="#film" data-scroll>수상작</a>
+  <a href="#reel" data-scroll>광고 영상</a>
+  <a href="#work" data-scroll>캠페인</a>
+  <a href="#archive" data-scroll>아카이브</a>
+  <a href="#studio" data-scroll>스튜디오</a>
+  <a href="#contact" data-scroll>프로젝트 문의</a>
+</div>
+
+<main id="top">
+
+<!-- ░░ HERO ░░ -->
+<section class="hero" id="hero">
+  <div class="hero__bg">
+    <video class="hero__vid is-on" id="heroA" muted autoplay playsinline loop preload="auto"></video>
+    <video class="hero__vid" id="heroB" muted autoplay playsinline loop preload="auto"></video>
+    <div class="hero__scrim"></div>
+    <div class="hero__lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="hero__body">
+    <p class="eyebrow reveal">AI CREATIVE FILM STUDIO — SEOUL</p>
+    <h1 class="hero__h1">
+      <span class="line"><span>0.1초 만에</span></span>
+      <span class="line"><span>멈추게 하는</span></span>
+      <span class="line"><span><em>장면</em>을 만듭니다</span></span>
+    </h1>
+    <p class="hero__sub reveal">Pixel Lab은 광고 영상과 커머스 비주얼을 만드는 크리에이티브 팀입니다.<br>
+      촬영장 없이, 스튜디오 퀄리티로 — 컨셉부터 마스터까지.</p>
+    <div class="hero__cta reveal">
+      <a href="#film" class="btn btn--fill" data-scroll data-cursor="재생">수상작 보기</a>
+      <a href="#reel" class="btn" data-scroll data-cursor="릴"><span>광고 영상 <b id="heroFilmCount">23</b>편</span></a>
+    </div>
+  </div>
+
+  <div class="hero__meta">
+    <div class="hero__now"><span class="dot"></span><b id="heroNow">—</b></div>
+    <div class="hero__scroll"><span>SCROLL</span><i></i></div>
+  </div>
+</section>
+
+<!-- ░░ TICKER ░░ -->
+<div class="ticker" aria-hidden="true"><div class="ticker__row" id="tickerRow"></div></div>
+
+<!-- ░░ AWARDS ░░ -->
+<section class="awards" id="awards">
+  <div class="wrap">
+    <div class="awards__grid">
+      <article class="award reveal">
+        <div class="award__yr">2026</div>
+        <div class="award__body">
+          <h3>한국경제신문 AI 다큐멘터리 부문 <strong>최우수상</strong></h3>
+          <p>내러티브 다큐멘터리 부문 최고 등급 수상</p>
+        </div>
+        <div class="award__seal" aria-hidden="true">★</div>
+      </article>
+      <article class="award reveal">
+        <div class="award__yr">GAMFF</div>
+        <div class="award__body">
+          <h3>경북 AI메타버스 콘텐츠 공모전 <strong>광고부문 수상</strong></h3>
+          <p>수상작 «GOYO — intus KOREA» 아래에서 전편 감상</p>
+        </div>
+        <div class="award__seal" aria-hidden="true">★</div>
+      </article>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><b data-count="34" id="statBrands">0</b><span>브랜드 캠페인</span></div>
+      <div class="stat reveal"><b data-count="542" id="statShots">0</b><span>커머스 비주얼 컷</span></div>
+      <div class="stat reveal"><b data-count="23" id="statFilms">0</b><span>광고 영상</span></div>
+      <div class="stat reveal"><b data-count="2">0</b><span>공모전 수상</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ AWARD FILM ░░ -->
+<section class="film" id="film">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <span class="sec__no">01</span>
+      <h2 class="sec__title">수상작</h2>
+      <p class="sec__desc">GAMFF 경북 AI메타버스 콘텐츠 공모전 · 광고부문</p>
+    </header>
+
+    <div class="film__stage reveal">
+      <div class="film__player" id="filmPlayer" data-cursor="재생">
+        <video id="filmVideo" poster="assets/film/gamff-poster.jpg" playsinline preload="none">
+          <source src="assets/film/gamff.mp4" type="video/mp4">
+        </video>
+        <button class="film__play" id="filmPlay" aria-label="수상작 재생">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <span>PLAY WITH SOUND</span>
+        </button>
+        <div class="film__hud">
+          <span class="film__badge">4K · 01:19</span>
+          <span class="film__badge film__badge--win">GAMFF WINNER</span>
+        </div>
+      </div>
+
+      <aside class="film__info">
+        <p class="film__client">intus KOREA</p>
+        <h3 class="film__title">GOYO<span>고요</span></h3>
+        <p class="film__log">100년의 산업 현장, 굉음에 묻힌 목소리.<br>
+          닿지 못했던 말들을 잇는 기술에 관하여.</p>
+        <ol class="beats">
+          <li><b>01</b><span>2025 — 산업재해 사망자</span></li>
+          <li><b>02</b><span>1920 — 100년의 굉음</span></li>
+          <li><b>03</b><span>«닿지 못해서»</span></li>
+          <li><b>04</b><span>GOYO Signal — 전달력 테스트</span></li>
+          <li><b>05</b><span>집으로</span></li>
+        </ol>
+        <dl class="film__credits">
+          <div><dt>부문</dt><dd>광고 · 브랜디드 필름</dd></div>
+          <div><dt>포맷</dt><dd>3840×2160 / 30fps</dd></div>
+          <div><dt>제작</dt><dd>Pixel Lab</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ REEL ░░ -->
+<section class="reel" id="reel">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <span class="sec__no">02</span>
+      <h2 class="sec__title">광고 영상</h2>
+      <p class="sec__desc">마우스를 올리면 재생됩니다 · 클릭하면 소리와 함께 전체 화면</p>
+    </header>
+    <div class="chips" id="reelChips"></div>
+    <div class="reel__grid" id="reelGrid"></div>
+  </div>
+</section>
+
+<!-- ░░ WORK / BRAND CASES ░░ -->
+<section class="work" id="work">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <span class="sec__no">03</span>
+      <h2 class="sec__title">브랜드 캠페인</h2>
+      <p class="sec__desc"><b id="brandCount">34</b>개 브랜드 · 히어로컷부터 기능 콜아웃 · 라이프스타일 · 패키지까지 풀세트</p>
+    </header>
+    <div class="chips" id="workChips"></div>
+    <div class="work__grid" id="workGrid"></div>
+  </div>
+</section>
+
+<!-- ░░ ARCHIVE ░░ -->
+<section class="archive" id="archive">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <span class="sec__no">04</span>
+      <h2 class="sec__title">전체 아카이브</h2>
+      <p class="sec__desc"><b id="archCount">542</b>컷 · 스크롤하면 계속 불러옵니다</p>
+    </header>
+  </div>
+  <div class="archive__grid" id="archGrid"></div>
+  <div class="archive__more"><button class="btn" id="archMore" data-cursor="더보기">더 불러오기</button></div>
+</section>
+
+<!-- ░░ STUDIO ░░ -->
+<section class="studio" id="studio">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <span class="sec__no">05</span>
+      <h2 class="sec__title">스튜디오</h2>
+      <p class="sec__desc">무엇을, 어떻게 만드는가</p>
+    </header>
+
+    <div class="caps">
+      <article class="cap reveal"><span class="cap__no">01</span><h3>광고 영상 · 디지털 필름</h3><p>15초에서 60초까지. 컨셉 · 스토리보드 · 생성 · 편집 · 컬러 · 사운드를 한 팀에서 끝냅니다.</p></article>
+      <article class="cap reveal"><span class="cap__no">02</span><h3>커머스 비주얼 · 상세페이지</h3><p>히어로컷, 기능 콜아웃, 사이즈 도해, 라이프스타일, 패키지, How-to. 아마존 A+ 규격 그대로.</p></article>
+      <article class="cap reveal"><span class="cap__no">03</span><h3>브랜드 필름 · 다큐멘터리</h3><p>제품이 아니라 이유를 파는 내러티브. 수상작 «GOYO»가 그 결과입니다.</p></article>
+      <article class="cap reveal"><span class="cap__no">04</span><h3>SNS 숏폼 · 캐릭터 IP</h3><p>스크롤을 멈추게 하는 정보성 카툰 시리즈. 세로 · 가로 동시 대응.</p></article>
+      <article class="cap reveal"><span class="cap__no">05</span><h3>AI 프로덕션 파이프라인</h3><p>모델 · 로케이션 · 세트 비용 없이. 재촬영은 리렌더로, 시안은 며칠이 아니라 몇 시간으로.</p></article>
+      <article class="cap reveal"><span class="cap__no">06</span><h3>비주얼 시스템 설계</h3><p>한 브랜드의 수십 컷이 하나의 룩으로 묶이도록. 컬러 · 렌즈 · 라이팅을 규격화합니다.</p></article>
+    </div>
+
+    <div class="proc">
+      <div class="proc__line" aria-hidden="true"></div>
+      <div class="proc__step reveal"><b>01</b><h4>브리프 & 컨셉</h4><p>팔아야 할 한 문장을 먼저 정합니다.</p></div>
+      <div class="proc__step reveal"><b>02</b><h4>스토리보드</h4><p>컷 · 렌즈 · 카메라 무브까지 문서로 확정.</p></div>
+      <div class="proc__step reveal"><b>03</b><h4>AI 프로덕션</h4><p>키비주얼 생성 · 시퀀스 · 연속성 관리.</p></div>
+      <div class="proc__step reveal"><b>04</b><h4>컬러 & 사운드</h4><p>필름 그레이드와 사운드 디자인으로 마감.</p></div>
+      <div class="proc__step reveal"><b>05</b><h4>딜리버리</h4><p>플랫폼별 리사이즈 · 마스터 · 소스 일괄 전달.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ CONTACT ░░ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <p class="eyebrow reveal">NEXT PROJECT</p>
+    <h2 class="contact__h2 reveal">만들고 싶은 장면이<br>이미 머릿속에 있다면.</h2>
+    <p class="contact__sub reveal">브랜드, 제품, 예산, 원하는 일정만 알려주세요. 레퍼런스가 없어도 괜찮습니다.</p>
+    <!-- ▼▼ 실제 연락처로 교체하세요 ▼▼ -->
+    <a class="contact__mail reveal" href="mailto:hello@pixellab.kr" data-cursor="메일">hello@pixellab.kr</a>
+    <ul class="contact__meta reveal">
+      <li><span>기반</span><b>Seoul, KR</b></li>
+      <li><span>작업 범위</span><b>광고영상 · 커머스 비주얼 · 브랜드 필름</b></li>
+      <li><span>응답</span><b>영업일 기준 24시간 이내</b></li>
+    </ul>
+    <!-- ▲▲ -->
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>© <span id="yr"></span> Pixel Lab. All rights reserved.</span>
+    <span class="foot__awards">2026 한국경제신문 AI 다큐멘터리 부문 최우수상 · GAMFF 경북 AI메타버스 콘텐츠 공모전 광고부문 수상</span>
+    <a href="#top" data-scroll data-cursor="위로">맨 위로 ↑</a>
+  </div>
+</footer>
+
+</main>
+
+<!-- ░░ LIGHTBOX ░░ -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="미디어 뷰어">
+  <button class="lb__x" id="lbX" aria-label="닫기">✕</button>
+  <button class="lb__nav lb__nav--prev" id="lbPrev" aria-label="이전">‹</button>
+  <button class="lb__nav lb__nav--next" id="lbNext" aria-label="다음">›</button>
+  <div class="lb__stage" id="lbStage"></div>
+  <div class="lb__bar">
+    <div class="lb__meta"><b id="lbTitle"></b><span id="lbSub"></span></div>
+    <div class="lb__count"><span id="lbIdx">1</span> / <span id="lbTot">1</span></div>
+  </div>
+</div>
+
+<!-- ░░ CASE PANEL ░░ -->
+<div class="case" id="case" role="dialog" aria-modal="true" aria-label="캠페인 상세">
+  <div class="case__scrim" id="caseScrim"></div>
+  <div class="case__panel">
+    <button class="case__x" id="caseX" aria-label="닫기">✕</button>
+    <header class="case__head">
+      <p class="case__cat" id="caseCat"></p>
+      <h3 class="case__name" id="caseName"></h3>
+      <p class="case__prod" id="caseProd"></p>
+      <p class="case__note" id="caseNote"></p>
+      <p class="case__n" id="caseN"></p>
+    </header>
+    <div class="case__grid" id="caseGrid"></div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
