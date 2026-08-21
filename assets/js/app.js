@@ -824,7 +824,8 @@ function stickyCta () {
 const FORM = {
   ENDPOINT: '',                               // ← paste your form endpoint here
   MAILTO:   'hello@pixellab.kr',              // ← and your real inbox here
-  GUIDE:    'assets/guide/pixel-lab-motion-guide.pdf',
+  GUIDE:    'assets/guide/pixel-lab-audit.pdf',        // 01 자가진단
+  GUIDE2:   'assets/guide/pixel-lab-brief.pdf',        // 02 기획서 템플릿
 };
 
 function forms () {
@@ -863,15 +864,16 @@ function forms () {
     const btn = $('button', lf);
     btn.disabled = true; btn.textContent = '보내는 중…';
     try {
-      const how = await send({ form: '템플릿 신청', email: email.value.trim() },
-                             '[Pixel Lab] 영상 기획서 템플릿 신청');
+      const how = await send({ form: '무료 자료 2종 신청', email: email.value.trim() },
+                             '[Pixel Lab] 무료 자료 2종 신청');
+      const links = `<a href="${FORM.GUIDE}" download>① 15컷 자가진단</a> · <a href="${FORM.GUIDE2}" download>② 영상 기획서 템플릿</a>`;
       say(lm, 'ok', how === 'sent'
-        ? `신청 완료. 메일함을 확인해주세요.<br><a href="${FORM.GUIDE}" download>바로 내려받기</a>`
-        : `메일 앱이 열립니다. 그대로 보내주시면 가이드를 보내드립니다.<br><a href="${FORM.GUIDE}" download>지금 바로 내려받기</a>`);
+        ? `신청 완료. 메일함을 확인해주세요.<br>바로 내려받기 — ${links}`
+        : `메일 앱이 열립니다. 그대로 보내주세요.<br>지금 바로 내려받기 — ${links}`);
       lf.reset();
     } catch {
-      say(lm, 'err', `전송에 실패했습니다. <a href="${FORM.GUIDE}" download>가이드를 직접 내려받으세요.</a>`);
-    } finally { btn.disabled = false; btn.textContent = '무료로 받기'; }
+      say(lm, 'err', `전송에 실패했습니다. 직접 내려받으세요 — <a href="${FORM.GUIDE}" download>① 자가진단</a> · <a href="${FORM.GUIDE2}" download>② 기획서 템플릿</a>`);
+    } finally { btn.disabled = false; btn.textContent = '2종 한 번에 받기'; }
   });
 
   /* ── enquiry ── */
@@ -914,10 +916,13 @@ function forms () {
   /* let them look inside before handing over an email — desire before ask */
   const stack = $('#leadStack');
   if (stack) stack.addEventListener('click', () => {
-    openLB([1, 2, 3, 4].map(n => ({
-      type: 'image', id: null, src: `assets/guide/pages/p${n}.webp`,
-      title: '제품영상 기획서 템플릿', sub: `${n} / 4쪽 · 인쇄해서 채우세요`,
-    })), 0);
+    const pages = [
+      ...[1, 2, 3, 4].map(n => ({ src: `assets/guide/pages/audit${n}.webp`,
+        title: '① 상품페이지 15컷 자가진단', sub: `${n} / 4쪽` })),
+      ...[1, 2, 3, 4].map(n => ({ src: `assets/guide/pages/brief${n}.webp`,
+        title: '② 제품영상 기획서 템플릿', sub: `${n} / 4쪽` })),
+    ].map(o => ({ type: 'image', id: null, ...o }));
+    openLB(pages, 0);
   });
 
   /* clear the error state as soon as the visitor fixes it */

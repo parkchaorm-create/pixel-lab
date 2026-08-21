@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{word-break:keep-all;font-family:'Pretendard Variable',Pretendard,sans-serif;color:#14161a;word-break:keep-all;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:210mm;height:297mm;padding:20mm 18mm;position:relative;page-break-after:always;background:#fff;display:flex;flex-direction:column}
+.pg:last-child{page-break-after:auto}
+.mark{display:flex;align-items:center;gap:8px;font:800 10px/1 sans-serif;letter-spacing:.2em}
+.mark i{display:grid;grid-template-columns:repeat(2,6px);gap:2px}
+.mark i s{width:6px;height:6px;background:#14161a;display:block}
+.mark i s:nth-child(1),.mark i s:nth-child(4){background:#ff5a1f}
+h1{font-size:33px;line-height:1.24;letter-spacing:-.03em;font-weight:800;margin:34px 0 14px}
+h1 em{font-style:normal;color:#ff5a1f}
+.lede{font-size:13px;line-height:1.8;color:#4c525b;max-width:135mm}
+.kicker{font:700 9.5px/1 sans-serif;letter-spacing:.24em;color:#ff5a1f;margin-top:26px}
+h2{font-size:19px;letter-spacing:-.025em;font-weight:700;margin:6px 0 14px}
+.rule{height:2px;background:#14161a;margin:14px 0 18px}
+.cut{display:grid;grid-template-columns:26px 1fr;gap:11px;padding:9px 0;border-bottom:1px solid #e6e3de;break-inside:avoid}
+.cut b{font:800 15px/1.15 sans-serif;color:#ff5a1f;letter-spacing:-.02em}
+.cut h3{font-size:13.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:2px}
+.cut p{font-size:11.5px;line-height:1.62;color:#585e67}
+.cut q{display:block;font-size:11px;color:#8b9099;font-style:italic;margin-top:3px;quotes:'“' '”'}
+.mis{display:grid;grid-template-columns:16px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid #e6e3de;break-inside:avoid}
+.mis b{color:#ff5a1f;font-weight:800;font-size:12px}
+.mis h3{font-size:12.5px;font-weight:700;margin-bottom:2px}
+.mis p{font-size:11.5px;line-height:1.6;color:#585e67}
+.box{margin-top:auto;border:1.5px solid #14161a;border-radius:10px;padding:16px 18px;display:flex;gap:16px;align-items:center;justify-content:space-between}
+.box b{font-size:14.5px;font-weight:700;letter-spacing:-.02em;display:block;margin-bottom:3px}
+.box p{font-size:11.5px;color:#585e67;line-height:1.6}
+.box span{background:#ff5a1f;color:#fff;font-size:11.5px;font-weight:700;padding:10px 16px;border-radius:100px;white-space:nowrap}
+.fno{position:absolute;left:18mm;bottom:11mm;font:700 9px/1 sans-serif;letter-spacing:.16em;color:#a9aeb6}
+.chk{display:grid;gap:8px;margin-top:6px}
+.chk li{list-style:none;display:grid;grid-template-columns:15px 1fr;gap:9px;font-size:12px;line-height:1.6;color:#3e444d}
+.chk li span{display:block}
+.chk li s{width:13px;height:13px;border:1.5px solid #14161a;border-radius:3px;margin-top:3px;display:block;text-decoration:none}
+.cover-art{margin-top:8px;display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.artcap{margin-top:auto;font:700 9px/1 sans-serif;letter-spacing:.16em;color:#a9aeb6;padding-bottom:4px}
+.cover-art s{aspect-ratio:1;background:#eeebe6 center/cover no-repeat;border-radius:4px;display:block;text-decoration:none}
+
+
+
+.tpl{border:1.5px solid #14161a;border-radius:8px;overflow:hidden;margin-top:4px}
+.tpl__r{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid #ddd9d2;break-inside:avoid}
+.tpl__r:last-child{border-bottom:0}
+.tpl__t{background:#14161a;color:#fff;font:800 12px/1.1 sans-serif;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;padding:12px 4px;letter-spacing:-.02em}
+.tpl__t s{text-decoration:none;font-size:8px;font-weight:600;opacity:.62;letter-spacing:.06em}
+.tpl__c{padding:11px 13px}
+.tpl__c h4{font-size:12px;font-weight:700;margin-bottom:2px}
+.tpl__c p{font-size:10.5px;color:#7c828b;line-height:1.5;margin-bottom:7px}
+.tpl__c u{display:block;border-bottom:1px dashed #b9b4ab;height:15px;text-decoration:none}
+.tpl__c u+u{margin-top:7px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:4px}
+.pick li{list-style:none;display:grid;grid-template-columns:14px 1fr;gap:8px;break-inside:avoid;padding:6px 0;border-bottom:1px solid #e8e5e0}
+.pick li s{width:12px;height:12px;border:1.5px solid #14161a;border-radius:3px;margin-top:2px;display:block;text-decoration:none}
+.pick b{font-size:11.5px;font-weight:700;display:block}
+.pick i{font-style:normal;font-size:10px;color:#7c828b;line-height:1.45;display:block;margin-top:1px}
+.ck{display:grid;gap:0;margin-top:2px}
+.ck li{list-style:none;display:grid;grid-template-columns:15px 1fr;gap:9px;padding:8px 0;border-bottom:1px solid #e8e5e0;break-inside:avoid}
+.ck li s{width:13px;height:13px;border:1.5px solid #14161a;border-radius:3px;margin-top:2px;display:block;text-decoration:none}
+.ck b{font-size:11.5px;font-weight:700}
+.ck i{font-style:normal;font-size:10.5px;color:#7c828b;display:block;line-height:1.5;margin-top:1px}
+.hint{background:#fdf1ea;border-left:3px solid #ff5a1f;padding:9px 12px;border-radius:0 6px 6px 0;margin-top:10px}
+.hint p{font-size:10.5px;line-height:1.6;color:#5a4a42}
+
+.row{display:grid;grid-template-columns:24px 1fr 46px;gap:10px;padding:8px 0;border-bottom:1px solid #e8e5e0;break-inside:avoid;align-items:start}
+.row>b{font:800 13px/1.2 sans-serif;color:#c8c3ba;letter-spacing:-.02em;padding-top:1px}
+.row h4{font-size:12px;font-weight:700;margin-bottom:1px}
+.row p{font-size:10.5px;color:#7c828b;line-height:1.5}
+.row q{display:block;font-size:10px;color:#a2a7ae;font-style:italic;margin-top:2px;quotes:'“' '”'}
+.tag{font:800 8.5px/1 sans-serif;letter-spacing:.06em;padding:5px 6px;border-radius:4px;text-align:center;white-space:nowrap;margin-top:2px}
+.tag--p{background:#eceae5;color:#6d727a}
+.tag--v{background:#ff5a1f;color:#fff}
+.legend{display:flex;gap:14px;margin:10px 0 2px;font-size:10px;color:#7c828b;align-items:center}
+.legend s{text-decoration:none;font:800 8.5px/1 sans-serif;padding:5px 7px;border-radius:4px}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.score div{border:1.5px solid #14161a;border-radius:8px;padding:11px 12px}
+.score b{display:block;font:800 17px/1 sans-serif;color:#ff5a1f;margin-bottom:3px}
+.score i{font-style:normal;font-size:10.5px;color:#585e67;line-height:1.5;display:block}
+</style></head><body>
+
+<div class="pg">
+  <div class="mark"><i><s></s><s></s><s></s><s></s></i>PIXEL LAB</div>
+  <h1>내 상품페이지는<br><em>15점</em> 만점에 몇 점?</h1>
+  <p class="lede">브랜드 34곳, 상품페이지 537컷에서 뽑아낸 구성 순서와 자가진단표입니다.
+  <b>지금 운영 중인 페이지를 옆에 띄워두고 마지막 장을 체크해보세요.</b>
+  빠진 컷이 몇 번인지, 그중 몇 개가 영상이어야 하는지 그 자리에서 나옵니다.</p>
+  <p class="kicker" style="margin-top:12mm">들어 있는 것</p>
+  <ul class="chk">
+    <li><s></s><span>구매까지 필요한 <b>15개 컷</b>과 그 순서</span></li>
+    <li><s></s><span>컷마다 고객이 속으로 던지는 <b>질문</b></span></li>
+    <li><s></s><span>사진으로 되는 컷과 <b>영상이어야 하는 컷</b> 구분</span></li>
+    <li><s></s><span>내 페이지 <b>15점 자가진단표</b></span></li>
+  </ul>
+  <div class="hint"><p><b>먼저 확인해보세요:</b> 지금 운영 중인 상품페이지를 옆에 띄워두고
+  읽으시면, 빠진 컷이 어디인지 그 자리에서 보입니다.</p></div>
+  <p class="artcap">브랜드 34곳 · 상품페이지 537컷 · 제품 모션그래픽 23편</p>
+  <div class="cover-art"><s style="background-image:url(../img/thumb/p227.webp)"></s><s style="background-image:url(../img/thumb/p011.webp)"></s><s style="background-image:url(../img/thumb/p013.webp)"></s><s style="background-image:url(../img/thumb/p015.webp)"></s><s style="background-image:url(../img/thumb/p449.webp)"></s><s style="background-image:url(../img/thumb/p500.webp)"></s><s style="background-image:url(../img/thumb/p489.webp)"></s><s style="background-image:url(../img/thumb/p453.webp)"></s><s style="background-image:url(../img/thumb/p475.webp)"></s><s style="background-image:url(../img/thumb/p439.webp)"></s></div>
+  <div class="fno">PIXEL LAB — 상품페이지 15컷 자가진단 · 01</div>
+</div>
+
+<div class="pg">
+  <p class="kicker">SEQUENCE 01–08</p>
+  <h2>먼저, 인지시키는 여덟 컷</h2><div class="rule"></div>
+  <div class="legend"><s class="tag--p">사진</s>정지컷으로 충분<s class="tag--v">영상</s>움직여야 전달되는 컷</div>
+  <div class="row"><b>01</b><div><h4>히어로컷</h4><p>제품 단독, 배경은 비웁니다. 글자는 넣지 않습니다.</p><q>이게 뭐지?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>02</b><div><h4>한 줄 약속</h4><p>가장 강한 편익 한 문장을 제품 위에.</p><q>나한테 왜 필요하지?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>03</b><div><h4>사용 장면</h4><p>실제 공간에서 쓰이는 모습. 손이나 반려동물이 들어가면 신뢰가 올라갑니다.</p><q>내 생활에 들어올까?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>04</b><div><h4>핵심 기능 콜아웃</h4><p>제품을 중앙에 두고 3~6개를 선으로 지시. 일곱 개가 넘으면 아무것도 안 읽힙니다.</p><q>뭐가 좋은 건데?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>05</b><div><h4>디테일 매크로</h4><p>재질과 마감. 손으로 만졌을 때의 느낌을 대신합니다.</p><q>싸구려는 아닐까?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>06</b><div><h4>작동 원리</h4><p>내부 구조와 흐름. 분해되고 조립되는 과정은 정지컷으로 옮겨지지 않습니다.</p><q>진짜 되는 거야?</q></div><span class="tag tag--v">영상</span></div>
+  <div class="row"><b>07</b><div><h4>비교 · Before / After</h4><p>같은 프레임, 같은 조명으로만 비교합니다. 변화의 과정을 보여줄 때 설득력이 커집니다.</p><q>지금 쓰는 것보다 나아?</q></div><span class="tag tag--v">영상</span></div>
+  <div class="row"><b>08</b><div><h4>사이즈 도해</h4><p>실측 치수와 대비물. 손이 들어오는 순간 오해가 사라집니다.</p><q>얼마나 커?</q></div><span class="tag tag--v">영상</span></div>
+  <div class="fno">PIXEL LAB — 상품페이지 15컷 자가진단 · 02</div>
+</div>
+
+<div class="pg">
+  <p class="kicker">SEQUENCE 09–15</p>
+  <h2>다음, 신뢰를 만드는 일곱 컷</h2><div class="rule"></div>
+  <div class="row"><b>09</b><div><h4>How-to 3단계</h4><p>설치와 사용을 셋으로. 네 단계가 넘으면 어렵다고 느낍니다.</p><q>쓰기 번거롭진 않을까?</q></div><span class="tag tag--v">영상</span></div>
+  <div class="row"><b>10</b><div><h4>구성품</h4><p>박스를 열었을 때 나오는 전부를 평면으로 배치합니다.</p><q>뭐가 들어있지?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>11</b><div><h4>규격 · 인증</h4><p>소재, 안전 인증, 호환 정보. 글자가 많아도 되는 유일한 컷입니다.</p><q>안전한가?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>12</b><div><h4>컬러 · 옵션</h4><p>선택지를 한 화면에. 같은 각도, 같은 조명으로 통일합니다.</p><q>어떤 걸 고르지?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>13</b><div><h4>사용 시나리오 2~3종</h4><p>서로 다른 상황과 시간대. 구매 명분을 늘려주는 자리입니다.</p><q>언제 쓰게 될까?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>14</b><div><h4>보증 · 배송 · A/S</h4><p>마지막 망설임을 걷어냅니다. 아이콘 서넛이면 충분합니다.</p><q>잘못되면 어떡하지?</q></div><span class="tag tag--p">사진</span></div>
+  <div class="row"><b>15</b><div><h4>브랜드 클로징</h4><p>로고와 한 문장. 제품이 아니라 만든 사람을 기억하게 만듭니다.</p><q>이 브랜드 괜찮네.</q></div><span class="tag tag--v">영상</span></div>
+  <div class="hint"><p><b>영상으로 표시된 다섯 컷</b>은 공통점이 있습니다. 시간이 흐르거나(06·07·09),
+  크기가 비교되거나(08), 인상을 남겨야 하는(15) 컷입니다. 정지된 화면이 끝내 옮기지 못하는 영역입니다.</p></div>
+  <div class="fno">PIXEL LAB — 상품페이지 15컷 자가진단 · 03</div>
+</div>
+
+<div class="pg">
+  <p class="kicker">SELF-CHECK</p>
+  <h2>내 페이지는 몇 점입니까</h2><div class="rule"></div>
+  <p class="lede" style="font-size:11.5px;margin-bottom:8px">지금 운영 중인 상품페이지를 열어두고,
+  해당하는 컷이 있으면 체크하세요. 하나에 1점, 총 15점입니다.</p>
+  <ul class="pick">
+    <li><s></s><div><b>01 히어로컷</b><i>제품 단독, 글자 없음</i></div></li>
+    <li><s></s><div><b>02 한 줄 약속</b><i>편익 한 문장</i></div></li>
+    <li><s></s><div><b>03 사용 장면</b><i>실제 공간</i></div></li>
+    <li><s></s><div><b>04 기능 콜아웃</b><i>3~6개</i></div></li>
+    <li><s></s><div><b>05 디테일 매크로</b><i>재질·마감</i></div></li>
+    <li><s></s><div><b>06 작동 원리</b><i>구조·흐름</i></div></li>
+    <li><s></s><div><b>07 비교</b><i>Before / After</i></div></li>
+    <li><s></s><div><b>08 사이즈 도해</b><i>실측·대비물</i></div></li>
+    <li><s></s><div><b>09 How-to</b><i>3단계</i></div></li>
+    <li><s></s><div><b>10 구성품</b><i>박스 내용물 전부</i></div></li>
+    <li><s></s><div><b>11 규격·인증</b><i>소재·안전</i></div></li>
+    <li><s></s><div><b>12 컬러·옵션</b><i>한 화면에</i></div></li>
+    <li><s></s><div><b>13 사용 시나리오</b><i>2~3종</i></div></li>
+    <li><s></s><div><b>14 보증·배송</b><i>아이콘 서넛</i></div></li>
+    <li><s></s><div><b>15 브랜드 클로징</b><i>로고 + 한 문장</i></div></li>
+  </ul>
+  <div class="score">
+    <div><b>0–7점</b><i>기본 컷이 비어 있습니다. 순서대로 채우는 것만으로 달라집니다.</i></div>
+    <div><b>8–11점</b><i>사진은 갖췄습니다. 영상 표시 다섯 컷이 대개 비어 있습니다.</i></div>
+    <div><b>12–15점</b><i>구성은 충분합니다. 이제 품질과 톤의 문제입니다.</i></div>
+  </div>
+  <div class="box">
+    <div><b>비어 있는 칸, 채워드립니다.</b>
+    <p>몇 번 컷이 비었는지만 알려주시면 견적과 방향을 하루 안에 회신드립니다.<br>
+    상담은 무료이고, 맞지 않으면 맞지 않는다고 말씀드립니다.</p></div>
+    <span>무료 상담 신청</span>
+  </div>
+  <div class="fno">PIXEL LAB — 상품페이지 15컷 자가진단 · 04</div>
+</div>
+
+</body></html>
