@@ -3,9 +3,23 @@
 광고 영상 제작 크리에이티브 팀 **Pixel Lab**의 원페이지 포트폴리오 사이트입니다.
 빌드 도구·프레임워크 없이 순수 HTML/CSS/JS로 만들어져 있어, 이 폴더를 그대로 어디에나 올리면 동작합니다.
 
+## 🌐 라이브 주소
+
+**<https://parkchaorm-create.github.io/pixel-lab/>**
+
+GitHub Pages(무료)로 호스팅 중입니다. 저장소: <https://github.com/parkchaorm-create/pixel-lab>
+
+수정 후 반영하려면 이 폴더에서:
+
+```bash
+git add -A && git commit -m "수정 내용" && git push
+```
+
+1~2분 뒤 자동 반영됩니다.
+
 ---
 
-## 1. 바로 열어보기
+## 1. 로컬에서 열어보기
 
 ```bash
 python3 -m http.server 8777 --directory "/Volumes/sub_storage/05.광고대행/pixel-lab-site"
